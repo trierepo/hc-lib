@@ -1,0 +1,1 @@
+angular.module('hcLib', ['camera', 'ngDialog', 'ui.bootstrap']);
