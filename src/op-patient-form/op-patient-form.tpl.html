@@ -1,0 +1,163 @@
+<div class="card grade-linear">
+	<div class="row ">
+		<div class="grid-md-4">
+			<div class="row">
+				<div class="grid-md-12">
+					<div class="grade-linear">
+						<form name="opPatientForm" class="grid-md-12 card relative" novalidate>
+							<div class="row no-padding op-patient-form-heading"><b>OP Patient Form</b></div>
+							<div class="row padding-2px">
+								<label class="grid-md-4" for="patientName">Patient Name*</label>
+								<div class="grid-md-8 no-padding">
+									<patient-auto-suggest options="{placeHolder:'Patient Name'}" output-model="patient" on-select="checkPatientStatus(selected)"> </patient-auto-suggest>
+								</div>
+								<div ng-if="opPatientIsExist" class="color-red">{{opPatientIsExist}}</div>
+							</div>
+							<!-- if op patient exist display : none -->
+							<div ng-if="!opPatientIsExist">
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="opType">OP Type*</label>
+									<div class="grid-md-8 no-padding">
+										<select ng-model="opPatient.opType" name="opType"
+											class="form-field grid-md-12" required="required"
+											ng-change="setOPCost()"
+											ng-options="optype as optype.opType for optype in opTypes track by optype.id"></select>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="opType">OP Sub Type*</label>
+									<div class="grid-md-8 no-padding">
+										<select ng-model="opPatient.opSubType" name="opSubType"
+											class="form-field grid-md-12" required="required"
+											ng-change="setOPCost()"
+											ng-options="opSubType as opSubType.opSubType for opSubType in opSubTypes track by opSubType.id"></select>
+									</div>
+								</div>
+								<div class="row padding-2px"
+									ng-if="opPatient.opType.id==1 || opPatient.opType.id==2">
+									<label class="grid-md-4" for="cardNo">Card No</label>
+									<div class="grid-md-8 relative no-padding">
+										<input type="text" ng-model="opPatient.cardNo" disabled
+											class="form-field grid-md-12" name="cardNo"
+											placeholder="Enter Card No" required="required" /> <span
+											class="alert-msg"
+											ng-if="opPatientForm.cardNo.$dirty && opPatientForm.cardNo.$error.required">*Enter
+											CardNo</span>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="consultFee">Conslt. Fee:*</label>
+									<div class="grid-md-8 relative no-padding">
+										<input type="text" ng-model="opPatient.consultFee"
+											class="form-field grid-md-12" name="consultFee"
+											ng-pattern="/^[0-9]*$/" placeholder="Consultation Fee"
+											required="required" /> <span class="alert-msg"
+											ng-if="opPatientForm.consultFee.$dirty && opPatientForm.consultFee.$error.required">*Enter
+											consultFee</span> <span class="alert-msg"
+											ng-if="opPatientForm.consultFee.$dirty && opPatientForm.consultFee.$error.pattern">*Enter
+											Number only</span>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="height">Ht &nbsp; --
+										&nbsp; Wt</label>
+									<div class="grid-md-8 no-padding ">
+										<div class="relative grid-md-5 no-padding pull-left">
+											<input type="text" ng-model='opPatient.height'
+												class="form-field grid-md-12" ng-pattern="/^[0-9]*$/"
+												name="height" placeholder="Ht"> <span
+												class="form-field-suffix ">cm</span> <span class="alert-msg"
+												ng-if="opPatientForm.height.$dirty && opPatientForm.height.$error.pattern">*Enter
+												Number only</span>
+										</div>
+										<div class="grid-md-2 no-padding text-center pull-left">--</div>
+										<div class="relative grid-md-5 no-padding pull-left">
+											<input type="text" ng-model='opPatient.weight'
+												class="form-field grid-md-12" ng-pattern="/^[0-9]*$/"
+												name="weight" placeholder="Wt"> <span
+												class="form-field-suffix">Kg</span> <span class="alert-msg"
+												ng-if="opPatientForm.weight.$dirty && opPatientForm.weight.$error.pattern">*Enter
+												Number only</span>
+										</div>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="temp">Temp. -- Pulse</label>
+									<div class="grid-md-8 no-padding ">
+										<div class="relative grid-md-5 no-padding pull-left">
+											<input type="text" ng-model='opPatient.temperature'
+												class="form-field grid-md-12" name="temp"
+												ng-pattern="/^[0-9]+\.?[0-9]*$/" placeholder="Temp"> <span
+												class="form-field-suffix"><sup>o</sup>F</span> <span
+												class="alert-msg"
+												ng-if="opPatientForm.temp.$dirty && opPatientForm.temp.$error.pattern">*Enter
+												Number only</span>
+										</div>
+										<div class="grid-md-2 no-padding text-center pull-left">--</div>
+										<div class="relative grid-md-5 no-padding pull-left">
+											<input type="text" ng-model='opPatient.pulse'
+												class="form-field grid-md-12" name="pulse"
+												ng-pattern="/^[0-9]*$/" placeholder="Pulse"> <span
+												class="form-field-suffix">BPM</span> <span class="alert-msg"
+												ng-if="opPatientForm.pulse.$dirty && opPatientForm.pulse.$error.pattern">*Enter
+												Number only</span>
+										</div>
+										<div class="grid-md-3"></div>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="bp">B.P. &nbsp; --&nbsp;
+										Sugar</label>
+									<div class="grid-md-8 no-padding ">
+										<div class="relative grid-md-5 no-padding  pull-left">
+											<input type="text" ng-model='opPatient.bp'
+												class="form-field grid-md-12" ng-pattern="/^[0-9\/]+$/"
+												name="bp" placeholder="B.P"> <span class="alert-msg"
+												ng-if="opPatientForm.bp.$dirty && opPatientForm.bp.$error.pattern">*Enter
+												Number only</span>
+										</div>
+										<div class="grid-md-2 no-padding text-center pull-left">--</div>
+										<div class="relative grid-md-5 no-padding pull-left">
+											<input type="text" ng-model='opPatient.sugar'
+												class="form-field grid-md-12" ng-pattern="/^[0-9]*$/"
+												name="sugar" placeholder="Sugar"> <span
+												class="alert-msg"
+												ng-if="opPatientForm.sugar.$dirty && opPatientForm.sugar.$error.pattern">*Enter
+												Number only</span>
+										</div>
+									</div>
+								</div>
+								<div class="row padding-2px">
+									<label class="grid-md-4" for="complaint">Complaint*</label>
+									<div class="grid-md-8 relative no-padding">
+										<input type="text" name="complaint" ng-pattern="/^[\w -,]*$/" ng-model='opPatient.complaint' class="form-field grid-md-12" placeholder="Complaint" required /> 
+											<span class="alert-msg" ng-if="opPatientForm.complaint.$dirty && opPatientForm.complaint.$error.required">*Enter Complaint</span>
+											<span class="alert-msg" ng-if="opPatientForm.complaint.$dirty && opPatientForm.complaint.$error.pattern">*Enter characters only</span>
+									</div>
+								</div>
+								<div class="row no-padding">
+									<div class="grid-md-4"></div>
+									<div class="grid-md-8 no-padding">
+										<button class="btn btn-md btn-sky-blue grid-md-12" click-and-disable="functionToEnableButton()"
+											ng-disabled="opPatientForm.$invalid || opPatientIsExist" ng-click="addOpPatient(opPatient)">SAVE</button>
+									</div>
+								</div>
+								<div class="overlay absolute" ng-class="{'show':formLoader}"></div>
+								<div class="form-loader" ng-class="{'show':formLoader}">
+									<i class="fa fa-refresh fa-spin"></i>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="grid-md-8 card padding-5">
+			<div class="row no-padding op-patient-form-heading">Existing Patient Search </div>
+			<div>
+				<patient-search on-select="onSelectPatient($patient)" on-save="onPatientAdd($patient)" select="select"></patient-search>
+			</div>
+		</div>
+	</div>
+</div>
+

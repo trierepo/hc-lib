@@ -1,4 +1,171 @@
 angular.module('hcLib', ['camera', 'ngDialog', 'ui.bootstrap']);
+angular.module("hcLib").directive("opPatientForm", function() {
+    controller.$inject = ['$scope', '$stateParams', 'opPatientService', 'opService', '$state', 'ngDialog', '$parse'];
+	return {
+		restrict : 'E',
+		scope : {
+			op: '=?'
+		},
+		controller : controller,
+		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
+    };
+    function controller($scope,$stateParams,opPatientService, opService, $state,ngDialog, $parse){
+	
+        $scope.onSelectPatient = onSelectPatient;
+        $scope.onPatientAdd = onPatientAdd;
+        $scope.addOpPatient = addOpPatient;
+        $scope.getOpTypes = getOpTypes;
+        $scope.functionToEnableButton = functionToEnableButton;
+        $scope.opTypes = [];
+        $scope.opConfig = {};
+
+        function init(){
+            opService.getOp($stateParams.opId).then(function(op) {
+                $scope.op = op;
+                $scope.defOpPatient = {patient:{}, op: {id: op.id}};
+                getOpTypes();
+                getOpSubTypeList();
+            });
+            $scope.opConfig = opService.getOPConfig();
+        }
+        init();
+        
+        function getOpTypes(){
+            opPatientService.getOpTypeList().then(function(res){
+                $scope.opTypes = res;
+                $scope.defOpPatient.opType = $scope.opTypes[0];
+                $scope.opPatient = angular.copy($scope.defOpPatient);
+                $scope.setOPCost();
+            });
+        }
+
+        function getOpSubTypeList(){
+            opPatientService.getOpSubTypeList().then(function(res){
+                $scope.opSubTypes = res;
+                $scope.defOpPatient.opSubType = $scope.opSubTypes[0];
+                $scope.opPatient = angular.copy($scope.defOpPatient);
+                $scope.setOPCost();
+            });
+        }
+        
+        
+        function addOpPatient(opPatient){
+            if ($scope.opPatient.cardNo === 'New Card') {
+                var opType = $parse('opPatient.opType.id')($scope);
+                var opSubType = $parse('opPatient.opSubType.id')($scope);
+                var config = $parse('opConfig.costs[' + opType + '][' + opSubType + ']')($scope);
+                if (config) {
+                    var patientId = $parse('opPatient.patient.id')($scope);
+                    if (patientId && !$scope.opConfig.free.includes(opSubType)) {
+                        var req = {
+                            patient: {id: patientId},
+                            opTypeId: opType,
+                            opSubTypeId: opSubType,
+                            validity: config.validity
+                        };
+                        opPatientService.createPatientCard(req).then(function(res) {
+                            $scope.opPatient.cardNo = res.id;
+                            saveOrUpdateOPPatient();
+                        });
+                    } else {
+                        saveOrUpdateOPPatient();
+                    }
+                } else {
+                    saveOrUpdateOPPatient();
+                }
+            } else {
+                saveOrUpdateOPPatient();
+            }
+            //TO SAVE OP-SUB-TYPE
+            var req = {
+                    patient: {id: opPatient.patient.id},
+                    opTypeId: opPatient.opType.id,
+                    opSubTypeId: opPatient.opSubType.id,
+                };
+                opPatientService.createPatientCard(req).then(function(res) {
+    //				$scope.opPatient.cardNo = res.id;
+                    saveOrUpdateOPPatient();
+                });
+        }
+        
+        function saveOrUpdateOPPatient() {
+            opPatientService.addOpPatient($scope.opPatient).then(function(response){
+                $state.go('opPatientList',{opId: $scope.op.id});
+            });		
+        }
+        function onSelectPatient(patient){
+            document.querySelector("[ng-model = 'suggestModel']").value = patient.name;
+            if($scope.opPatient) {
+                $scope.opPatient.patient = angular.copy(patient);
+            }
+            $scope.checkPatientStatus(patient);
+        }
+        function onPatientAdd(patient){
+            document.querySelector("[ng-model = 'suggestModel']").value = patient.name;
+            if($scope.opPatient) {
+                $scope.opPatient.patient = angular.copy(patient);
+            }
+            $scope.checkPatientStatus(patient);
+        }
+        $scope.checkPatientStatus=function(selectedPatient){
+            var patientRes = undefined;
+            $scope.opPatientIsExist='';
+            if($scope.opPatient.patient) {
+                $scope.opPatient.patient.patientName="";
+            }
+            opPatientService.getOpPatientListByOpId({op:{id:$stateParams.opId}}).then(function(res) {
+                $scope.opPatientList = res;
+                for(var i=0;i<res.length;i++) {
+                    if($scope.opPatientList[i].patient.id == selectedPatient.id){
+                        patientRes = $scope.opPatientList[i];
+                        $scope.opPatientIsExist = $scope.opPatientList[i].patient.name + ' Already added to OP.';
+                        break;
+                    }
+                }
+                
+                if (!$scope.opPatientIsExist) {
+                    $scope.setOPCost();
+                }
+            });
+            if(patientRes==undefined){
+                $scope.opPatientIsExist='';
+                $scope.patient = selectedPatient;
+                $scope.opPatient.patient = $scope.patient;
+            }
+        };
+        
+        $scope.setOPCost = function() {
+            var opType = $parse('opPatient.opType.id')($scope);
+            var opSubType = $parse('opPatient.opSubType.id')($scope);
+            var config = $parse('opConfig.costs[' + opType + '][' + opSubType + ']')($scope);
+            if (config) {
+                $scope.opPatient.consultFee = config.cost;
+                var patientId = $parse('opPatient.patient.id')($scope);
+                if (patientId && !$scope.opConfig.free.includes(opSubType)) {
+                    var req = {
+                        patient: {id: patientId},
+                        opTypeId: opType,
+                        opSubTypeId: opSubType,
+                        validity: config.validity
+                    };
+                    opPatientService.getPatientCard(req).then(function(res) {
+                        if (res) {
+                            $scope.opPatient.cardNo = res.id;
+                            var cardOPCost = $parse('opConfig.costs[' + res.opTypeId + '][' + res.opSubTypeId + '].cost')($scope);
+                            $scope.opPatient.consultFee = config.cost - cardOPCost > 0? config.cost - cardOPCost: 0;
+                        } else {
+                            $scope.opPatient.cardNo = "New Card";
+                        }
+                    });
+                }
+            }
+        };
+        function functionToEnableButton() {
+            return $timeout(angular.noop, 5000);
+        };
+    }
+});
+
 angular.module("hcLib").directive("patientForm", function() {
 	controller.$inject = ['$scope', 'patientService', '$stateParams', '$state', 'ngDialog'];
 	return {
@@ -707,7 +874,12 @@ angular.module('tcLib').service('supplierService', ['httpService', function(http
 }]);
 
 angular.module('hcLib').run(['$templateCache', function($templateCache) {
-$templateCache.put('src/patient-form/patient-form.tpl.html',
+$templateCache.put('src/op-patient-form/op-patient-form.tpl.html',
+    "<div class=\"card grade-linear\"><div class=\"row\"><div class=\"grid-md-4\"><div class=\"row\"><div class=\"grid-md-12\"><div class=\"grade-linear\"><form name=\"opPatientForm\" class=\"grid-md-12 card relative\" novalidate><div class=\"row no-padding op-patient-form-heading\"><b>OP Patient Form</b></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"patientName\">Patient Name*</label><div class=\"grid-md-8 no-padding\"><patient-auto-suggest options=\"{placeHolder:'Patient Name'}\" output-model=\"patient\" on-select=\"checkPatientStatus(selected)\"></patient-auto-suggest></div><div ng-if=\"opPatientIsExist\" class=\"color-red\">{{opPatientIsExist}}</div></div><div ng-if=\"!opPatientIsExist\"><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"opType\">OP Type*</label><div class=\"grid-md-8 no-padding\"><select ng-model=\"opPatient.opType\" name=\"opType\" class=\"form-field grid-md-12\" required ng-change=\"setOPCost()\" ng-options=\"optype as optype.opType for optype in opTypes track by optype.id\"></select></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"opType\">OP Sub Type*</label><div class=\"grid-md-8 no-padding\"><select ng-model=\"opPatient.opSubType\" name=\"opSubType\" class=\"form-field grid-md-12\" required ng-change=\"setOPCost()\" ng-options=\"opSubType as opSubType.opSubType for opSubType in opSubTypes track by opSubType.id\"></select></div></div><div class=\"row padding-2px\" ng-if=\"opPatient.opType.id==1 || opPatient.opType.id==2\"><label class=\"grid-md-4\" for=\"cardNo\">Card No</label><div class=\"grid-md-8 relative no-padding\"><input ng-model=\"opPatient.cardNo\" disabled class=\"form-field grid-md-12\" name=\"cardNo\" placeholder=\"Enter Card No\" required> <span class=\"alert-msg\" ng-if=\"opPatientForm.cardNo.$dirty && opPatientForm.cardNo.$error.required\">*Enter CardNo</span></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"consultFee\">Conslt. Fee:*</label><div class=\"grid-md-8 relative no-padding\"><input ng-model=\"opPatient.consultFee\" class=\"form-field grid-md-12\" name=\"consultFee\" ng-pattern=\"/^[0-9]*$/\" placeholder=\"Consultation Fee\" required> <span class=\"alert-msg\" ng-if=\"opPatientForm.consultFee.$dirty && opPatientForm.consultFee.$error.required\">*Enter consultFee</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.consultFee.$dirty && opPatientForm.consultFee.$error.pattern\">*Enter Number only</span></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"height\">Ht &nbsp; -- &nbsp; Wt</label><div class=\"grid-md-8 no-padding\"><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.height\" class=\"form-field grid-md-12\" ng-pattern=\"/^[0-9]*$/\" name=\"height\" placeholder=\"Ht\"> <span class=\"form-field-suffix\">cm</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.height.$dirty && opPatientForm.height.$error.pattern\">*Enter Number only</span></div><div class=\"grid-md-2 no-padding text-center pull-left\">--</div><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.weight\" class=\"form-field grid-md-12\" ng-pattern=\"/^[0-9]*$/\" name=\"weight\" placeholder=\"Wt\"> <span class=\"form-field-suffix\">Kg</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.weight.$dirty && opPatientForm.weight.$error.pattern\">*Enter Number only</span></div></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"temp\">Temp. -- Pulse</label><div class=\"grid-md-8 no-padding\"><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.temperature\" class=\"form-field grid-md-12\" name=\"temp\" ng-pattern=\"/^[0-9]+\\.?[0-9]*$/\" placeholder=\"Temp\"> <span class=\"form-field-suffix\"><sup>o</sup>F</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.temp.$dirty && opPatientForm.temp.$error.pattern\">*Enter Number only</span></div><div class=\"grid-md-2 no-padding text-center pull-left\">--</div><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.pulse\" class=\"form-field grid-md-12\" name=\"pulse\" ng-pattern=\"/^[0-9]*$/\" placeholder=\"Pulse\"> <span class=\"form-field-suffix\">BPM</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.pulse.$dirty && opPatientForm.pulse.$error.pattern\">*Enter Number only</span></div><div class=\"grid-md-3\"></div></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"bp\">B.P. &nbsp; --&nbsp; Sugar</label><div class=\"grid-md-8 no-padding\"><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.bp\" class=\"form-field grid-md-12\" ng-pattern=\"/^[0-9\\/]+$/\" name=\"bp\" placeholder=\"B.P\"> <span class=\"alert-msg\" ng-if=\"opPatientForm.bp.$dirty && opPatientForm.bp.$error.pattern\">*Enter Number only</span></div><div class=\"grid-md-2 no-padding text-center pull-left\">--</div><div class=\"relative grid-md-5 no-padding pull-left\"><input ng-model=\"opPatient.sugar\" class=\"form-field grid-md-12\" ng-pattern=\"/^[0-9]*$/\" name=\"sugar\" placeholder=\"Sugar\"> <span class=\"alert-msg\" ng-if=\"opPatientForm.sugar.$dirty && opPatientForm.sugar.$error.pattern\">*Enter Number only</span></div></div></div><div class=\"row padding-2px\"><label class=\"grid-md-4\" for=\"complaint\">Complaint*</label><div class=\"grid-md-8 relative no-padding\"><input name=\"complaint\" ng-pattern=\"/^[\\w -,]*$/\" ng-model=\"opPatient.complaint\" class=\"form-field grid-md-12\" placeholder=\"Complaint\" required> <span class=\"alert-msg\" ng-if=\"opPatientForm.complaint.$dirty && opPatientForm.complaint.$error.required\">*Enter Complaint</span> <span class=\"alert-msg\" ng-if=\"opPatientForm.complaint.$dirty && opPatientForm.complaint.$error.pattern\">*Enter characters only</span></div></div><div class=\"row no-padding\"><div class=\"grid-md-4\"></div><div class=\"grid-md-8 no-padding\"><button class=\"btn btn-md btn-sky-blue grid-md-12\" click-and-disable=\"functionToEnableButton()\" ng-disabled=\"opPatientForm.$invalid || opPatientIsExist\" ng-click=\"addOpPatient(opPatient)\">SAVE</button></div></div><div class=\"overlay absolute\" ng-class=\"{'show':formLoader}\"></div><div class=\"form-loader\" ng-class=\"{'show':formLoader}\"><i class=\"fa fa-refresh fa-spin\"></i></div></div></form></div></div></div></div><div class=\"grid-md-8 card padding-5\"><div class=\"row no-padding op-patient-form-heading\">Existing Patient Search</div><div><patient-search on-select=\"onSelectPatient($patient)\" on-save=\"onPatientAdd($patient)\" select=\"select\"></patient-search></div></div></div></div>"
+  );
+
+
+  $templateCache.put('src/patient-form/patient-form.tpl.html',
     "<style>.borderd{\r" +
     "\n" +
     "       border-bottom: 1px solid gray;\r" +
