@@ -1,14 +1,15 @@
 angular.module("hcLib").directive("opPatientForm", function() {
-    controller.$inject = ['$scope', '$stateParams', 'opPatientService', 'opService', '$state', 'ngDialog', '$parse'];
+    controller.$inject = ['$scope', 'opPatientService', 'opService', '$state', '$parse'];
 	return {
 		restrict : 'E',
 		scope : {
-			op: '=?'
+            op: '=',
+            opId: '@'
 		},
 		controller : controller,
 		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
     };
-    function controller($scope,$stateParams,opPatientService, opService, $state,ngDialog, $parse){
+    function controller($scope,opPatientService, opService, $state,$parse){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
@@ -19,7 +20,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         $scope.opConfig = {};
 
         function init(){
-            opService.getOp($stateParams.opId).then(function(op) {
+            opService.getOp(opId).then(function(op) {
                 $scope.op = op;
                 $scope.defOpPatient = {patient:{}, op: {id: op.id}};
                 getOpTypes();
@@ -112,7 +113,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
             if($scope.opPatient.patient) {
                 $scope.opPatient.patient.patientName="";
             }
-            opPatientService.getOpPatientListByOpId({op:{id:$stateParams.opId}}).then(function(res) {
+            opPatientService.getOpPatientListByOpId({op:{id:opId}}).then(function(res) {
                 $scope.opPatientList = res;
                 for(var i=0;i<res.length;i++) {
                     if($scope.opPatientList[i].patient.id == selectedPatient.id){
