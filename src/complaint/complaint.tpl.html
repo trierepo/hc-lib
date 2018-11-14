@@ -1,0 +1,75 @@
+<style>
+	.not-found-alert{
+	    padding-left: 10px !important;
+	    padding-top: 5px !important;
+	    color: red;
+	}
+	.text-bold{
+		font-weight:bold;
+	}
+	.overlay-height{
+		height:820px;
+	}
+	.text-left{
+		text-align:cetner;
+	}
+</style>
+<div class="row card card-full-height-86" >
+	<div class="grid-md-12 pull-right">
+		<div class="tc-panel grid-md-12 no-padding relative">
+			<div class="tc-panel-heading">
+				Complaint
+				<button class="btn btn-sm btn-sky-blue pull-right" ng-click="toggleAddPopup()">Add Complaint</button>
+			</div>
+			<div class="overlay card-full-height-86 absolute" ng-class="{'show':showAddPopup}" ng-click="toggleAddPopup()"></div>
+			<div class="popup absolute grid-md-11 no-min-height padding-15"  ng-class="{'show':showAddPopup}">
+				<form name="form.complaintForm" novalidate>
+					<div class="row">
+						<label class="grid-md-4" for="shortName">Short Name</label>
+						<div class="grid-md-8 no-padding">
+							<input id="shortName" type="text" class="form-field grid-md-12" name="shortName" placeholder="Short Name" ng-model="complaint.comShortName"required>
+							<span class="error-msg" ng-messages="complaintForm.shortName.$error">
+								<span ng-message="required" class="ng-scope">Short Name is Required.</span>
+							</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="grid-md-4" for="description">Description</label>
+						<div class="grid-md-8 no-padding">
+							<input id="description" type="text" class="form-field grid-md-12" name="description" placeholder="Description" ng-model="complaint.comDesc"required>
+							<span class="error-msg" ng-messages="complaintForm.description.$error">
+								<span ng-message="required" class="ng-scope">Description is Required.</span>
+							</span>
+						</div>
+					</div>
+				</form>
+				<div class="row">
+						<label class="grid-md-4"></label>
+						<button class="btn btn-sm btn-light-green" name="complaintFormBtn" ng-disabled="form.complaintForm.$invalid" ng-click="setComplaint(complaint,'new')">Submit</button>
+					</div>
+			</div>
+			
+		</div>
+		<table class="table">
+			<tr>
+				<th>S.No</th>
+				<th>Complaint</th>
+				<th>Description</th>
+				<th>Date</th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="complaint in patientComplaints" ng-if="patientComplaints.length">
+				<td>{{$index+1}}</td>
+				<td>{{complaint.comShortName}}</td>
+				<td>{{complaint.comDesc}}</td>
+				<td>{{complaint.createdOn |date:'dd-MM-yyyy'}}</td>
+				<td>
+					<button class="btn btn-sm btn-rounded btn-light-green font-11" title="Select Complaint" ng-click="selectComplaint(complaint)"><i class="fa fa-check"></i></button>
+				</td>
+			</tr>
+			<tr ng-if="!patientComplaints.length">
+				<td colspan="5" class="not-found-alert text-bold">No Complaints Found.</td>
+			</tr>
+		</table>
+	</div>
+</div>

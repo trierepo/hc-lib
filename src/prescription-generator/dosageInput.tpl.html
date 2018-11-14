@@ -1,0 +1,21 @@
+<div>
+	<div class='selection'>
+		<i class='fa seletion-trigger pointer-cursor' ng-class="{'fa-check': isDosageSelected, 'fa-times': !isDosageSelected}" ng-click="toggleSelection($event)"></i>
+		<div class='selected-dosage pointer-cursor' ng-click="toggleSelectionDisplay($event)">{{dosage}}</div>
+	</div>
+	<!-- <input list="remarks" title='{{dosageRemarks}}' type='text' size='3' class='tiny form-field' ng-show='isDosageSelected' ng-model='dosageRemarks' />
+	<datalist id="remarks">
+		<option value="à°®à±�.">à°®à±�.</option>
+		<option id="initDosageRemarks" value="à°¤.">à°¤.</option>
+	</datalist> -->
+	<select class='tiny form-field' ng-model="dosageRemarks" ng-show="isDosageSelected">
+		<option value="à°¤." id="initDosageRemarks">à°¤.</option>
+		<option value="à°®à±�.">à°®à±�.</option>
+	</select>
+	
+</div>
+<div class='selection-container' ng-show="showSelection.showList">
+	<ul>
+		<li class="pointer-cursor" ng-repeat="dos in dosageListByCategory(medicineCategory)" ng-click="onSelect(dos.val)">{{dos.key}}</li>
+	</ul>
+</div>
