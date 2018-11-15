@@ -1,0 +1,115 @@
+<style>
+	.margin-bottom{
+		margin-bottom:0px !important;
+	}
+	.casesheet-min-height{
+		    min-height: 86.5vh;
+	}
+	.bordered-bottom{
+		border-bottom:2px solid lightgrey;
+	}
+	.grade-linear{
+	    background-image: repeating-linear-gradient(-45deg, transparent, transparent 1px, #ddd 4px);
+	}
+	.wrap-word{ 
+	 word-wrap: break-word;
+	}
+	
+	.color-bg-fields{
+		 background-color: rgba(172, 219, 241, 0.19);
+	}
+</style>
+<div>
+	<div class="row no-padding  card card-full-height-84 vertical-scroll" ng-if="!caseSheetEditable">
+		<div class="row bordered-bottom">
+			<div class="grid-md-8  font-18"><strong>CaseSheet</strong></div>
+			<div class="grid-md-4"><button type="button" class="btn btn-md btn-normal btn-info pull-right" ng-click="editCaseSheet()">Edit</button></div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>Chief Complaint:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.chiefComplaint}}</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>Present Illness:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.presentIllNess}}</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>Past Illness:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.pastIllNess}}</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>Family History:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.familyHistory}}</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>General Examination:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.genExamination}}</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="row">
+				<div class="grid-md-12 font-14"><strong>Pro Diagnosis:</strong></div>
+				<div class="grid-md-1"></div><div class="grid-md-10 wrap-word color-bg-fields">{{caseSheet.proDiagnosis}}</div>
+			</div>
+		</div>
+	</div>
+	<div class="row card no-padding card-full-height-86 vertical-scroll" ng-if="caseSheetEditable">
+		<div class="grid-md-2"></div>
+		<div class="grid-md-8">
+			<div class="font-18 bordered-bottom mar-bottom-2"><strong>CaseSheet</strong></div>
+			<form name="caseSheetForm" >
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>Chief Complaint:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.chiefComplaint"></textarea>
+				</div>
+			</div>
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>Present Illness:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.presentIllNess"></textarea>
+				</div>
+			</div>
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>Past Illness:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.pastIllNess"></textarea>
+				</div>
+			</div>
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>Family History:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.familyHistory"></textarea>
+				</div>
+			</div>
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>General Examination:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.genExamination"></textarea>
+				</div>
+			</div>
+			<div class="row no-padding">
+				<label class="grid-md-12 font-14"><strong>Pro Diagnosis:</strong></label>
+				<div class="grid-md-12">
+					<textarea rows="4" cols="200" class="form-field grid-md-12 no-padding margin-bottom font-15" ng-model="caseSheet.proDiagnosis"></textarea>
+				</div>
+			</div>
+			</form>
+			<div class="row no-padding">
+				<div class="grid-md-12">
+					<button type="submit" ng-if="caseSheet.id" class="btn btn-green bnt-md pull-right margin-bottom" ng-click="updateCaseSheet(caseSheet)">Update</button>
+					<button type="submit" ng-if="!caseSheet.id" class="btn btn-purple bnt-lg pull-right margin-bottom" ng-click="saveCaseSheet(caseSheet)">Add Case Sheet</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
