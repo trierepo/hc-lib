@@ -1,4 +1,4 @@
-angular.module("medicalShopModule").directive("medicineCategoryForm",function(){
+angular.module("hcLib").directive("medicineCategoryForm",function(){
 	return{
 		templateUrl:"src/medicine-category-form/medicine-category-form.tpl.html",
 		controller:['$scope', 'medicineCategoryService', function($scope,medicineCategoryService){
