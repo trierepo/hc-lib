@@ -1,0 +1,52 @@
+<form name="companyForm" novalidate>
+	<div class="row">
+		<label class="grid-md-4" for="companyCode">Company Code</label>
+		<div class="grid-md-8 no-padding">
+			<input id="companyCode" type="text" class="form-field grid-md-12" name="companyCode" placeholder="Company Code" ng-model="company.code" required>
+			<span class="error-msg" ng-messages="companyForm.companyCode.$error">
+				<span ng-message="required">Code is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="companyName">Company Name</label>
+		<div class="grid-md-8 no-padding">
+			<input id="companyName" type="text" class="form-field grid-md-12" name="companyName" placeholder="Company Name" ng-model="company.name" required>
+			<span class="error-msg" ng-messages="companyForm.companyName.$error">
+				<span ng-message="required">Name is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="companyShortName">Company Short Name</label>
+		<div class="grid-md-8 no-padding">
+			<input id="companyShortName" type="text" class="form-field grid-md-12" name="companyShortName" placeholder="Company Short Name" ng-model="company.shortName" required>
+			<span class="error-msg" ng-messages="companyForm.companyShortName.$error">
+				<span ng-message="required">Short Name is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="companyCity">Company City</label>
+		<div class="grid-md-8 no-padding">
+			<input id="companyCity" type="text" class="form-field grid-md-12" name="companyCity" placeholder="Company City" ng-model="company.city" required>
+			<span class="error-msg" ng-messages="companyForm.companyCity.$error">
+				<span ng-message="required">City is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="companyPhoneNo">Company Phone No</label>
+		<div class="grid-md-8 no-padding">
+			<input id="companyPhoneNo" type="text" class="form-field grid-md-12" name="companyPhoneno" placeholder="Company Phone No"" ng-model="company.phoneNo" ng-pattern="/^[0-9]{10,10}$/" ng-maxlength="10" maxlength="10" required>
+			<span class="error-msg" ng-messages="companyForm.companyPhoneno.$error">
+				<span ng-message="required">Phoneno is Required.</span>
+				<span ng-message="pattern">Phoneno is Number.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row" ng-if="!company.id">
+		<label class="grid-md-4"></label>
+		<button class="btn btn-light-green btn-normal" ng-disabled="companyForm.$invalid" name="companyFormBtn" ng-click="saveCompany(company)">Submit</button>
+	</div>
+</form>

@@ -1,0 +1,16 @@
+<form name="medicineCategoryDoctorForm" novalidate>
+	<div class="row" >
+		<label class="grid-md-4" for="medicineDoctorName">Medicine Doctor Category</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineDoctorName" type="text" class="form-field grid-md-12" placeholder="Medicine Doctor Category Name" name="medicineDoctorName" ng-model="medicineCategoryByDoctor.categoryName" required> 
+			<span class="error-msg" ng-messages="medicineCategoryDoctorForm.medicineDoctorName.$error">
+				<span ng-message="required">Medicine Doctor Category is Required.</span>
+			</span>
+		</div>
+	</div>
+	
+	<div class="row" ng-if="!medicineCategoryByDoctor.id">
+		<label class="grid-md-4"></label>
+		<button class="btn btn-light-green btn-normal" ng-disabled="medicineCategoryDoctorForm.$invalid" name="medicineCategoryDoctorFormBtn" ng-click="saveMedicineCategoryByDoctor(medicineCategoryByDoctor)">Submit</button>
+	</div>
+</form>

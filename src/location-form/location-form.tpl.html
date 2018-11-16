@@ -1,0 +1,16 @@
+<form name="locationForm" novalidate>
+	<div class="row">
+		<label class="grid-md-4" for="medicineLocationName">Medicine Location Name</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineLocationName" type="text" class="form-field grid-md-12" name="locationName" placeholder="Medicine Location Name" ng-model="location.location" required> 
+			<span class="error-msg" ng-messages="locationForm.locationName.$error">
+				<span ng-message="required">Location is Required.</span>
+			</span>
+		</div>
+	</div>
+	
+	<div class="row" ng-if="!location.id">
+		<label class="grid-md-4"></label>
+		<button class="btn btn-light-green btn-normal" ng-disabled="locationForm.$invalid" ng-click="saveMedicineLocation(location)">Submit</button>
+	</div>
+</form>

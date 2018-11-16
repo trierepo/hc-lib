@@ -1,0 +1,62 @@
+<form name="drugFormulaForm" novalidate>
+	<div class="row">
+		<label class="grid-md-4" for="drugCode">Drug Code</label>
+		<div class="grid-md-8 no-padding">
+			<input id="drugCode" type="text" class="form-field grid-md-12" name="drugCode" placeholder="Drug Code" ng-model="drugFormulae.code" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.drugCode.$error">
+				<span ng-message="required">Code is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="hsnCode">HSN Code</label>
+		<div class="grid-md-8 no-padding">
+			<input id="hsnCode" type="text" class="form-field grid-md-12" name="hsnCode"  placeholder="HSN Code" ng-model="drugFormulae.hsnCode" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.hsnCode.$error">
+				<span ng-message="required">HSN Code is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="drugName">Drug Name</label>
+		<div class="grid-md-8 no-padding">
+			<input id="drugName" type="text" class="form-field grid-md-12" name="drugName" placeholder="Drug Name" ng-model="drugFormulae.name" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.drugName.$error">
+				<span ng-message="required">Name is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="drugContent">Drug Content</label>
+		<div class="grid-md-8 no-padding">
+			<input id="drugContent" type="text" class="form-field grid-md-12" name="drugContent"  placeholder="Drug Content" ng-model="drugFormulae.drugContent" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.drugContent.$error">
+				<span ng-message="required">Content is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineAlertCount">Medicine Min Count</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineAlertCount" type="text" class="form-field grid-md-12" ng-pattern="/^[0-9]*$/" name="medicineMinCount" placeholder="Medicine Min Count" ng-model="drugFormulae.minCount" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.medicineMinCount.$error">
+				<span ng-message="required">Min Count is Required.</span>
+				<span ng-message="pattern">Min Count is Number.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineAlertCount">Medicine Max Count</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineAlertCount" type="text" class="form-field grid-md-12" ng-pattern="/^[0-9]*$/" name="medicineMaxCount" placeholder="Medicine Max Count" ng-model="drugFormulae.maxCount" required>
+			<span class="error-msg" ng-messages="drugFormulaForm.medicineMaxCount.$error">
+				<span ng-message="required">Max Count is Required.</span>
+				<span ng-message="pattern">Max Count is Number.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row" ng-if="!drugFormulae.id">
+		<label class="grid-md-4"></label>
+		<button class="btn btn-light-green btn-normal" ng-disabled="drugFormulaForm.$invalid" name="drugFormulaFormBtn" ng-click="saveDrugFormulae(drugFormulae)">Submit</button>
+	</div>
+</form>

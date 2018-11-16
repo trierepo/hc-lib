@@ -1,0 +1,132 @@
+<form name="medicineForm" novalidate>
+	<div class="row">
+		<label class="grid-md-4" for="medicineCode">Medicine Code</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineCode" type="text" class="form-field grid-md-12" name="medicineCode" placeholder="Medicine Code" ng-model="medicine.code" required>
+			<span class="error-msg" ng-messages="medicineForm.medicineCode.$error">
+				<span ng-message="required">Code is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineName">Medicine Name</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineName" type="text" class="form-field grid-md-12" name="medicineName" placeholder="Medicine Name" ng-model="medicine.name" required>
+			<span class="error-msg" ng-messages="medicineForm.medicineName.$error">
+				<span ng-message="required">Name is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineNoOfUnits">No Of Units</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineNoOfUnits" type="text" class="form-field grid-md-12" name="medicineNoOfUnits" placeholder="No Of Units" ng-model="medicine.noOfUnits" ng-pattern="/^[0-9]*$/" required>
+			<span class="error-msg" ng-messages="medicineForm.medicineNoOfUnits.$error">
+				<span ng-message="required">No Of Units is Required.</span>
+				<span ng-message="pattern">No Of Units is Number.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicinePurchasePacking">Purchase Packing</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicinePurchasePacking" type="text" class="form-field grid-md-12" name="medicinePurchasePacking" placeholder="Purchase Packing" ng-model="medicine.purchasePacking" required>
+			<span class="error-msg" ng-messages="medicineForm.medicinePurchasePacking.$error">
+				<span ng-message="required">Purchase Packing is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineSchedule">Medicine Schedule</label>
+		<div class="grid-md-8 no-padding">
+			<input id="medicineSchedule" type="text" class="form-field grid-md-12" name="medicineSchedule" placeholder="Medicine Schedule" ng-model="medicine.schedule" required>
+			<span class="error-msg" ng-messages="medicineForm.medicineSchedule.$error">
+				<span ng-message="required">Schedule is Required.</span>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="company">Company</label>
+		<div class="grid-md-8 no-padding">
+			<div class="grid-md-11 pull-left">
+				<auto-suggest suggestions="companies" class="grid-md-12" clearable="false" search-key="name" output-model="medicine.company" display-key="name" options="{'inputClass':'grid-md-12','placeHolder':'Company','fieldName':'companyName','isRequired':'true'}"></auto-suggest>
+				<span class="error-msg" ng-messages="medicineForm.companyName.$error">
+					<span ng-message="required">Company is Required.</span>
+				</span>
+			</div>
+			<div class="grid-md-1 pull-right text-right">
+				<button class="btn btn-sky-blue btn-circle master-add-icons" ng-click="openCompanyForm()">
+					<i class="fa fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	 <div class="row">
+		<label class="grid-md-4" for="drugFormulae">Drug Formula</label>
+		<div class="grid-md-8 no-padding">
+			<div class="grid-md-11 pull-left">
+				<auto-suggest suggestions="drugFormulae" class="grid-md-12" clearable="false" search-key="name" output-model="medicine.drugFormulae" display-key="name" options="{'inputClass':'grid-md-12','placeHolder':'Drug Formula','fieldName':'drugName','isRequired':'true'}"></auto-suggest>
+				<span class="error-msg" ng-messages="medicineForm.drugName.$error">
+					<span ng-message="required">Drug Formula is Required.</span>
+				</span>
+			</div>
+			<div class="grid-md-1 pull-right text-right">
+				<button class="btn btn-sky-blue btn-circle master-add-icons" ng-click="openDrugFormulaForm()">
+					<i class="fa fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineCategory">Medicine Category</label>
+		<div class="grid-md-8 no-padding">
+			<div class="grid-md-11 pull-left">
+				<auto-suggest suggestions="medicineCategories" class="grid-md-12" clearable="false" search-key="category" output-model="medicine.category" display-key="category" options="{'inputClass':'grid-md-12','placeHolder':'Medicine Category','fieldName':'categoryName','isRequired':'true'}"></auto-suggest>
+				<span class="error-msg" ng-messages="medicineForm.categoryName.$error">
+					<span ng-message="required">Category is Required.</span>
+				</span>
+			</div>
+			<div class="grid-md-1 pull-right text-right">
+				<button class="btn btn-sky-blue btn-circle master-add-icons" ng-click="openCategoryForm()">
+					<i class="fa fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<label class="grid-md-4" for="medicineCategoryByDoctor">MedicineCategory Doctor</label>
+		<div class="grid-md-8 no-padding">
+			<div class="grid-md-11 pull-left">
+				<auto-suggest suggestions="medicineCategoryByDoctor" class="grid-md-12" clearable="false" search-key="categoryName" output-model="medicine.categoryByDoctor" display-key="categoryName" options="{'inputClass':'grid-md-12','placeHolder':'Medicine Category By Doctor','fieldName':'doctorCategoryName','isRequired':'true'}"></auto-suggest>
+				<span class="error-msg" ng-messages="medicineForm.doctorCategoryName.$error">
+					<span ng-message="required">Category By Doctor is Required.</span>
+				</span>
+			</div>
+			<div class="grid-md-1 pull-right text-right">
+				<button class="btn btn-sky-blue btn-circle master-add-icons" ng-click="openDoctorCategoryForm()">
+					<i class="fa fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div> 
+	<div class="row">
+		<label class="grid-md-4" for="medicineLocationList">Medicine Location</label>
+		<div class="grid-md-8 no-padding">
+			<div class="grid-md-11 pull-left">
+				<auto-suggest suggestions=" medicineLocations" class="grid-md-12" clearable="false" search-key="location" output-model="medicine.location" display-key="location" options="{'inputClass':'grid-md-12','placeHolder':'Medicine Location','fieldName':'location','isRequired':'true'}"></auto-suggest>
+				<span class="error-msg" ng-messages="medicineForm.location.$error">
+					<span ng-message="required">Location is Required.</span>
+				</span>
+			</div>
+			<div class="grid-md-1 pull-right text-right">
+				<button class="btn btn-sky-blue btn-circle master-add-icons" ng-click="openLocationForm()">
+					<i class="fa fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div> 
+	<div class="row">
+		<label class="grid-md-4"></label>
+		<button class="btn btn-light-green btn-normal" name="medicineFormBtn" click-and-disable="functionToEnableButton()" ng-disabled="medicineForm.$invalid||!medicine.company ||!medicine.drugFormulae||!medicine.category||!medicine.categoryByDoctor|| !medicine.location.id" ng-click="saveMedicine(medicine)">Submit</button>
+	</div>
+</form>
