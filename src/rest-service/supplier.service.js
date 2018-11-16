@@ -1,4 +1,4 @@
-angular.module('tcLib').service('supplierService', ['httpService', function(httpService) {
+angular.module('hcLib').service('supplierService', ['httpService', function(httpService) {
     this.save = save;
     this.suppliersList = suppliersList;
 

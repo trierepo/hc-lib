@@ -1,4 +1,4 @@
-angular.module('tcLib').service('commonService', ['httpService', function(httpService) {
+angular.module('hcLib').service('commonService', ['httpService', function(httpService) {
 
     this.createDoctor = createDoctor;
     this.getDoctors = getDoctors;

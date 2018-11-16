@@ -1,4 +1,4 @@
-angular.module('tcLib').service('labPatientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('labPatientService', ['httpService', function(httpService) {
     this.save = save;
     this.search = search;
     this.saveReport = saveReport;

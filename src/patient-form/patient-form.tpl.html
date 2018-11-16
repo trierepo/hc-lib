@@ -12,7 +12,7 @@
             <div class="patientForm-headline borderd">
                 <h3>Add New Patient</h3>
                 <div class="pull-right mar-top-44px">
-                   <tc-camera ng-model="patient.photoString" confirm-text="Confirm"></tc-camera>
+                   <button tc-camera class="btn btn-sky-blue" ng-model="patient.photoString" confirm-text="Confirm">Photo</button>
                 </div>
             </div>
             <form name="form.patientForm" class="patientForm margin-10 " novalidate>
@@ -137,10 +137,10 @@
         </div>
         <div class="grid-md-4">
             <div ng-if="!patient.id">
-                <img class="grid-md-12"ng-src="{{patient.photoString}}" alt="Click capture to see preview" />
+                <img class="grid-md-12" ng-src="{{patient.photoString}}" alt="Click capture to see preview" />
             </div>
             <div ng-if="patient.id && !patient.photoString">
-                <img src="./patient/getphoto?patientId={{ patient.id }}" class="img-patient" style="border:2px solid gray">
+                <img ng-src="./patient/getphoto?patientId={{ patient.id }}" class="img-patient" style="border:2px solid gray">
             </div>
             <div ng-if="patient.id && patient.photoString">
                 <img ng-src="{{patient.photoString}}" class="img-patient" style="border:2px solid gray">

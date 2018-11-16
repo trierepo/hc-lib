@@ -1,4 +1,4 @@
-angular.module('tcLib').provider('httpService', function() {
+angular.module('hcLib').provider('httpService', function() {
 	var basePath = '';
 	try {
 		basePath = location.href.split('/')[3];

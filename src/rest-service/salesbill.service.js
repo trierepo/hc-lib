@@ -1,4 +1,4 @@
-angular.module('tcLib').service('salesbillService', ['httpService', function(httpService) {
+angular.module('hcLib').service('salesbillService', ['httpService', function(httpService) {
     this.create = create;
     this.salesBillsListByOptions = salesBillsListByOptions;
     this.salesAmount = salesAmount;

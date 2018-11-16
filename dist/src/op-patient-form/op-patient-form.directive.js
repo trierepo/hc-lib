@@ -1,37 +1,29 @@
 angular.module("hcLib").directive("opPatientForm", function() {
-    controller.$inject = ['$scope', 'opPatientService', 'opService', '$state', '$parse'];
-	return {
-		restrict : 'E',
-		scope : {
-            op: '=',
-            opId: '='
-		},
-		controller : controller,
-		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
-    };
-    function controller($scope,opPatientService, opService, $state,$parse){
+	
+    controller.$inject = ['$scope','opPatientService', 'opService', '$state','$parse', 'commonService'];
+    function controller($scope,opPatientService, opService, $state,$parse, commonService){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
         $scope.addOpPatient = addOpPatient;
-        $scope.getOpTypes = getOpTypes;
+        $scope.getOpType = getOpType;
         $scope.functionToEnableButton = functionToEnableButton;
         $scope.opTypes = [];
         $scope.opConfig = {};
 
         function init(){
-            opService.getOp(opId).then(function(op) {
+            opService.get($scope.opId).then(function(op) {
                 $scope.op = op;
                 $scope.defOpPatient = {patient:{}, op: {id: op.id}};
-                getOpTypes();
+                getOpType();
                 getOpSubTypeList();
             });
-            $scope.opConfig = opService.getOPConfig();
+            $scope.opConfig = opService.configList();
         }
         init();
         
-        function getOpTypes(){
-            opPatientService.getOpTypeList().then(function(res){
+        function getOpType(){
+            commonService.getOpTypes().then(function(res){
                 $scope.opTypes = res;
                 $scope.defOpPatient.opType = $scope.opTypes[0];
                 $scope.opPatient = angular.copy($scope.defOpPatient);
@@ -40,7 +32,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         }
 
         function getOpSubTypeList(){
-            opPatientService.getOpSubTypeList().then(function(res){
+            commonService.getOpSubTypes().then(function(res){
                 $scope.opSubTypes = res;
                 $scope.defOpPatient.opSubType = $scope.opSubTypes[0];
                 $scope.opPatient = angular.copy($scope.defOpPatient);
@@ -89,7 +81,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         }
         
         function saveOrUpdateOPPatient() {
-            opPatientService.addOpPatient($scope.opPatient).then(function(response){
+            opPatientService.save($scope.opPatient).then(function(response){
                 $state.go('opPatientList',{opId: $scope.op.id});
             });		
         }
@@ -113,7 +105,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
             if($scope.opPatient.patient) {
                 $scope.opPatient.patient.patientName="";
             }
-            opPatientService.getOpPatientListByOpId({op:{id:opId}}).then(function(res) {
+            opPatientService.getOpPatientsListByOptions({op:{id:$scope.opId}}).then(function(res) {
                 $scope.opPatientList = res;
                 for(var i=0;i<res.length;i++) {
                     if($scope.opPatientList[i].patient.id == selectedPatient.id){
@@ -148,7 +140,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
                         opSubTypeId: opSubType,
                         validity: config.validity
                     };
-                    opPatientService.getPatientCard(req).then(function(res) {
+                    opPatientService.getOrCreatePatientCard(req).then(function(res) {
                         if (res) {
                             $scope.opPatient.cardNo = res.id;
                             var cardOPCost = $parse('opConfig.costs[' + res.opTypeId + '][' + res.opSubTypeId + '].cost')($scope);
@@ -164,4 +156,13 @@ angular.module("hcLib").directive("opPatientForm", function() {
             return $timeout(angular.noop, 5000);
         };
     }
+    return {
+		restrict : 'E',
+		scope : {
+            op: '=',
+            opId: '='
+		},
+		controller : controller,
+		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
+    };
 });

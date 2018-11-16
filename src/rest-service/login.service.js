@@ -1,4 +1,4 @@
-angular.module('tcLib').service('loginService', ['httpService', function(httpService) {
+angular.module('hcLib').service('loginService', ['httpService', function(httpService) {
     this.login = login;
     this.sessionUser = sessionUser;
 

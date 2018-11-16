@@ -1,4 +1,4 @@
-angular.module('tcLib').service('medicineCategoryService', ['httpService', function(httpService) {
+angular.module('hcLib').service('medicineCategoryService', ['httpService', function(httpService) {
     this.save = save;
     this.medicineCategoryList = medicineCategoryList;
 

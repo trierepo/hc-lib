@@ -1,4 +1,4 @@
-angular.module('tcLib').service('purchasebillService', ['httpService', function(httpService) {
+angular.module('hcLib').service('purchasebillService', ['httpService', function(httpService) {
     this.createPurchaseBill = createPurchaseBill;
     this.purchaseBillById = purchaseBillById;
     this.purchaseBillsListByOptions = purchaseBillsListByOptions;

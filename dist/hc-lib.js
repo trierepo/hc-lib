@@ -549,39 +549,31 @@ angular.module("hcLib").directive("medicineForm",function(){
 	
 });
 angular.module("hcLib").directive("opPatientForm", function() {
-    controller.$inject = ['$scope', 'opPatientService', 'opService', '$state', '$parse'];
-	return {
-		restrict : 'E',
-		scope : {
-            op: '=',
-            opId: '@'
-		},
-		controller : controller,
-		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
-    };
-    function controller($scope,opPatientService, opService, $state,$parse){
+	
+    controller.$inject = ['$scope','opPatientService', 'opService', '$state','$parse', 'commonService'];
+    function controller($scope,opPatientService, opService, $state,$parse, commonService){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
         $scope.addOpPatient = addOpPatient;
-        $scope.getOpTypes = getOpTypes;
+        $scope.getOpType = getOpType;
         $scope.functionToEnableButton = functionToEnableButton;
         $scope.opTypes = [];
         $scope.opConfig = {};
 
         function init(){
-            opService.getOp(opId).then(function(op) {
+            opService.get($scope.opId).then(function(op) {
                 $scope.op = op;
                 $scope.defOpPatient = {patient:{}, op: {id: op.id}};
-                getOpTypes();
+                getOpType();
                 getOpSubTypeList();
             });
-            $scope.opConfig = opService.getOPConfig();
+            $scope.opConfig = opService.configList();
         }
         init();
         
-        function getOpTypes(){
-            opPatientService.getOpTypeList().then(function(res){
+        function getOpType(){
+            commonService.getOpTypes().then(function(res){
                 $scope.opTypes = res;
                 $scope.defOpPatient.opType = $scope.opTypes[0];
                 $scope.opPatient = angular.copy($scope.defOpPatient);
@@ -590,7 +582,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         }
 
         function getOpSubTypeList(){
-            opPatientService.getOpSubTypeList().then(function(res){
+            commonService.getOpSubTypes().then(function(res){
                 $scope.opSubTypes = res;
                 $scope.defOpPatient.opSubType = $scope.opSubTypes[0];
                 $scope.opPatient = angular.copy($scope.defOpPatient);
@@ -639,7 +631,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         }
         
         function saveOrUpdateOPPatient() {
-            opPatientService.addOpPatient($scope.opPatient).then(function(response){
+            opPatientService.save($scope.opPatient).then(function(response){
                 $state.go('opPatientList',{opId: $scope.op.id});
             });		
         }
@@ -663,7 +655,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
             if($scope.opPatient.patient) {
                 $scope.opPatient.patient.patientName="";
             }
-            opPatientService.getOpPatientListByOpId({op:{id:opId}}).then(function(res) {
+            opPatientService.getOpPatientsListByOptions({op:{id:$scope.opId}}).then(function(res) {
                 $scope.opPatientList = res;
                 for(var i=0;i<res.length;i++) {
                     if($scope.opPatientList[i].patient.id == selectedPatient.id){
@@ -698,7 +690,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
                         opSubTypeId: opSubType,
                         validity: config.validity
                     };
-                    opPatientService.getPatientCard(req).then(function(res) {
+                    opPatientService.getOrCreatePatientCard(req).then(function(res) {
                         if (res) {
                             $scope.opPatient.cardNo = res.id;
                             var cardOPCost = $parse('opConfig.costs[' + res.opTypeId + '][' + res.opSubTypeId + '].cost')($scope);
@@ -714,20 +706,21 @@ angular.module("hcLib").directive("opPatientForm", function() {
             return $timeout(angular.noop, 5000);
         };
     }
+    return {
+		restrict : 'E',
+		scope : {
+            op: '=',
+            opId: '='
+		},
+		controller : controller,
+		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
+    };
 });
 
 angular.module("hcLib").directive("patientForm", function() {
-	controller.$inject = ['$scope', 'patientService', '$stateParams', '$state', 'ngDialog'];
-	return {
-		restrict : 'E',
-		scope : {
-			patient: '=?',
-			onSubmit : '&'
-		},
-		controller : controller,
-		templateUrl : "src/patient-form/patient-form.tpl.html"
-	};
-	function controller($scope, patientService, $stateParams, $state, ngDialog) {
+	
+	controller.$inject = ['$scope', 'patientService', 'ngDialog'];
+	function controller($scope, patientService,  ngDialog) {
 		$scope.addPatient = addPatient;
 		$scope.getAgeFromDob = getAgeFromDob;
 		$scope.getDateFromAge = getDateFromAge;
@@ -744,7 +737,6 @@ angular.module("hcLib").directive("patientForm", function() {
 				$scope.gender = $scope.genderTypes[0];
 				$scope.relationType = $scope.relationTypes[1];
 			}
-			$scope.opId = $stateParams.opId;
 		}
 
 		function addPatient() {
@@ -764,6 +756,15 @@ angular.module("hcLib").directive("patientForm", function() {
 		};
 		init();
 	}
+	return {
+		restrict : 'E',
+		scope : {
+			patient: '=?',
+			onSubmit : '&'
+		},
+		controller : controller,
+		templateUrl : "src/patient-form/patient-form.tpl.html"
+	};
 });
 angular.module("hcLib").directive('dosageInput', function() {
 	var dosageSelectionMap = {
@@ -982,7 +983,7 @@ angular.module("hcLib").directive('prescriptionGenerator', ['$rootScope', functi
 		}]
 	};
 }]);
-angular.module('tcLib').service('casesheet', ['httpService', function(httpService) {
+angular.module('hcLib').service('casesheet', ['httpService', function(httpService) {
     this.save = save;
     this.caseSheetList = caseSheetList;
 
@@ -997,7 +998,7 @@ angular.module('tcLib').service('casesheet', ['httpService', function(httpServic
     }
 }]);
 
-angular.module('tcLib').service('commonService', ['httpService', function(httpService) {
+angular.module('hcLib').service('commonService', ['httpService', function(httpService) {
 
     this.createDoctor = createDoctor;
     this.getDoctors = getDoctors;
@@ -1046,7 +1047,7 @@ angular.module('tcLib').service('commonService', ['httpService', function(httpSe
     }
 }]);
 
-angular.module('tcLib').service('companyService', ['httpService', function(httpService) {
+angular.module('hcLib').service('companyService', ['httpService', function(httpService) {
     this.save = save;
     this.companiesList = companiesList;
 
@@ -1059,7 +1060,7 @@ angular.module('tcLib').service('companyService', ['httpService', function(httpS
     }
 }]);
 
-angular.module('tcLib').service('complaintService', ['httpService', function(httpService) {
+angular.module('hcLib').service('complaintService', ['httpService', function(httpService) {
     this.saveComplaint = saveComplaint;
     this.saveComplaintTransation = saveComplaintTransation;
     this.complaintMastersList = complaintMastersList;
@@ -1086,7 +1087,7 @@ angular.module('tcLib').service('complaintService', ['httpService', function(htt
     }
 }]);
 
-angular.module('tcLib').service('drugFormulae', ['httpService', function(httpService) {
+angular.module('hcLib').service('drugFormulae', ['httpService', function(httpService) {
     this.save = save;
     this.drugFormulaeList = drugFormulaeList;
 
@@ -1099,7 +1100,7 @@ angular.module('tcLib').service('drugFormulae', ['httpService', function(httpSer
     }
 }]);
 
-angular.module('tcLib').provider('httpService', function() {
+angular.module('hcLib').provider('httpService', function() {
 	var basePath = '';
 	try {
 		basePath = location.href.split('/')[3];
@@ -1186,7 +1187,7 @@ angular.module('tcLib').provider('httpService', function() {
 	}];
 });
 
-angular.module('tcLib').service('labPatientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('labPatientService', ['httpService', function(httpService) {
     this.save = save;
     this.search = search;
     this.saveReport = saveReport;
@@ -1224,7 +1225,7 @@ angular.module('tcLib').service('labPatientService', ['httpService', function(ht
     }
 }]);
 
-angular.module('tcLib').service('locationService', ['httpService', function(httpService) {
+angular.module('hcLib').service('locationService', ['httpService', function(httpService) {
     this.save = save;
     this.locationsList = locationsList;
 
@@ -1237,7 +1238,7 @@ angular.module('tcLib').service('locationService', ['httpService', function(http
     }
 }]);
 
-angular.module('tcLib').service('loginService', ['httpService', function(httpService) {
+angular.module('hcLib').service('loginService', ['httpService', function(httpService) {
     this.login = login;
     this.sessionUser = sessionUser;
 
@@ -1250,7 +1251,7 @@ angular.module('tcLib').service('loginService', ['httpService', function(httpSer
     }
 }]);
 
-angular.module('tcLib').service('medicineCategoryService', ['httpService', function(httpService) {
+angular.module('hcLib').service('medicineCategoryService', ['httpService', function(httpService) {
     this.save = save;
     this.medicineCategoryList = medicineCategoryList;
 
@@ -1263,7 +1264,7 @@ angular.module('tcLib').service('medicineCategoryService', ['httpService', funct
     }
 }]);
 
-angular.module('tcLib').service('medicineCategoryByDoctorService', ['httpService', function(httpService) {
+angular.module('hcLib').service('medicineCategoryByDoctorService', ['httpService', function(httpService) {
     this.save = save;
     this.medicineCategoryByDoctorList = medicineCategoryByDoctorList;
 
@@ -1276,7 +1277,7 @@ angular.module('tcLib').service('medicineCategoryByDoctorService', ['httpService
     }
 }]);
 
-angular.module('tcLib').service('medicineService', ['httpService', function(httpService) {
+angular.module('hcLib').service('medicineService', ['httpService', function(httpService) {
     this.save = save;
     this.medicinesList = medicinesList;
     this.medicineViewList = medicineViewList;
@@ -1297,7 +1298,7 @@ angular.module('tcLib').service('medicineService', ['httpService', function(http
 
 }]);
 
-angular.module('tcLib').service('opPatientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('opPatientService', ['httpService', function(httpService) {
     this.save = save;
     this.getOpPatientsListByOptions = getOpPatientsListByOptions;
     this.getOpPatientByPatientId = getOpPatientByPatientId;
@@ -1330,7 +1331,7 @@ angular.module('tcLib').service('opPatientService', ['httpService', function(htt
     }
 }]);
 
-angular.module('tcLib').service('opPrescriptionService', ['httpService', function(httpService) {
+angular.module('hcLib').service('opPrescriptionService', ['httpService', function(httpService) {
     this.save = save;
     this.searchPurchaseMedicines = searchPurchaseMedicines;
     this.opPrescriptionList = opPrescriptionList;
@@ -1349,7 +1350,7 @@ angular.module('tcLib').service('opPrescriptionService', ['httpService', functio
 
 }]);
 
-angular.module('tcLib').service('opService', ['httpService', function(httpService) {
+angular.module('hcLib').service('opService', ['httpService', function(httpService) {
     this.create = create;
     this.search = search;
     this.get = get;
@@ -1384,7 +1385,7 @@ angular.module('tcLib').service('opService', ['httpService', function(httpServic
     }
 }]);
 
-angular.module('tcLib').service('patientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('patientService', ['httpService', function(httpService) {
     this.save = save;
     this.patientsListByOptions = patientsListByOptions;
     this.imageData = imageData;
@@ -1405,7 +1406,7 @@ angular.module('tcLib').service('patientService', ['httpService', function(httpS
   
 }]);
 
-angular.module('tcLib').service('purchasebillMedicineService', ['httpService', function(httpService) {
+angular.module('hcLib').service('purchasebillMedicineService', ['httpService', function(httpService) {
     this.purchaseBillMedicines = purchaseBillMedicines;
     this.alertInfo = alertInfo;
     this.pendingBillMedicines  = pendingBillMedicines;
@@ -1426,7 +1427,7 @@ angular.module('tcLib').service('purchasebillMedicineService', ['httpService', f
 
 }]);
 
-angular.module('tcLib').service('purchasebillService', ['httpService', function(httpService) {
+angular.module('hcLib').service('purchasebillService', ['httpService', function(httpService) {
     this.createPurchaseBill = createPurchaseBill;
     this.purchaseBillById = purchaseBillById;
     this.purchaseBillsListByOptions = purchaseBillsListByOptions;
@@ -1482,7 +1483,7 @@ angular.module('tcLib').service('purchasebillService', ['httpService', function(
 
 
 
-angular.module('tcLib').service('reportsService', ['httpService', function(httpService) {
+angular.module('hcLib').service('reportsService', ['httpService', function(httpService) {
     this.salesReports = salesReports;
     this.salesReturnReports = salesReturnReports;
     this.salesPaymentReports = salesPaymentReports;
@@ -1542,7 +1543,7 @@ angular.module('tcLib').service('reportsService', ['httpService', function(httpS
 
 }]);
 
-angular.module('tcLib').service('representativeService', ['httpService', function(httpService) {
+angular.module('hcLib').service('representativeService', ['httpService', function(httpService) {
     this.save = save;
     this.representativesList = representativesList;
 
@@ -1556,7 +1557,7 @@ angular.module('tcLib').service('representativeService', ['httpService', functio
     }
 }]);
 
-angular.module('tcLib').service('salesbillService', ['httpService', function(httpService) {
+angular.module('hcLib').service('salesbillService', ['httpService', function(httpService) {
     this.create = create;
     this.salesBillsListByOptions = salesBillsListByOptions;
     this.salesAmount = salesAmount;
@@ -1627,7 +1628,7 @@ angular.module('tcLib').service('salesbillService', ['httpService', function(htt
     }
 }]);
 
-angular.module('tcLib').service('supplierService', ['httpService', function(httpService) {
+angular.module('hcLib').service('supplierService', ['httpService', function(httpService) {
     this.save = save;
     this.suppliersList = suppliersList;
 
@@ -1759,7 +1760,7 @@ $templateCache.put('src/casesheet/casesheet.tpl.html',
     "\n" +
     "        width : 200px;\r" +
     "\n" +
-    "    }</style><h2 align=\"center\">Patient Form</h2><div class=\"row\"><div class=\"grid-md-8 card\"><div class=\"patientForm-headline borderd\"><h3>Add New Patient</h3><div class=\"pull-right mar-top-44px\"><tc-camera ng-model=\"patient.photoString\" confirm-text=\"Confirm\"></tc-camera></div></div><form name=\"form.patientForm\" class=\"patientForm margin-10\" novalidate><div class=\"row\"><div class=\"grid-md-1\"></div><div class=\"grid-md-9 no-padding\"><div class=\"row\"><label class=\"grid-md-4\" for=\"patientName\">Patient Name*</label><div class=\"grid-md-8 no-padding\"><input id=\"patientName\" class=\"form-field grid-md-12\" name=\"patientName\" placeholder=\"Patient Name\" ng-model=\"patient.name\" required> <span class=\"error-msg\" ng-messages=\"patientForm.patientName.$error\"><span ng-message=\"required\">*Name is Required.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"aadhar\">Aadhar No*</label><div class=\"grid-md-8 no-padding\"><input id=\"aadhar\" class=\"form-field grid-md-12\" name=\"aadhar\" placeholder=\"Aadhar No\" ng-blur=\"isAdhaarExists(patient.adharNo)\" ng-model=\"patient.aadharNo\" ng-maxlength=\"12\" maxlength=\"12\" ng-disabled=\"isAdhaarDisabled\"> <span class=\"error-msg\">{{adhaarMsg}}</span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"mobileNo\">Mobile No*</label><div class=\"grid-md-8 no-padding\"><input id=\"mobileNo\" class=\"form-field grid-md-12\" name=\"mobileNo\" placeholder=\"Mobile No\" ng-model=\"patient.mobileNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\" required> <span class=\"error-msg\" ng-messages=\"patientForm.mobileNo.$error\"><span ng-message=\"required\">*Mobile No is Required.</span> <span ng-message=\"pattern\">*Enter 10digits Mobile Number.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"altMobileNo\">Alt No</label><div class=\"grid-md-8 no-padding\"><input id=\"altMobileNo\" class=\"form-field grid-md-12\" name=\"altMobileNo\" placeholder=\"Alt Mobile No\" ng-model=\"patient.alternateNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\"></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"altMobileNo\">Emergency No</label><div class=\"grid-md-8 no-padding\"><input id=\"emergencyNo\" class=\"form-field grid-md-12\" name=\"emergencyNo\" placeholder=\"Emergency No\" ng-model=\"patient.emergencyNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\"></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"village\">Village*</label><div class=\"grid-md-8 no-padding\"><input id=\"village\" class=\"form-field grid-md-12\" name=\"village\" placeholder=\"Village\" ng-model=\"patient.village\" required> <span class=\"error-msg\" ng-messages=\"patientForm.village.$error\"><span ng-message=\"required\">*Village is Required.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"dob\">DOB -- Age*</label><div class=\"grid-md-8 no-padding\"><div class=\"row no-padding\"><div class=\"grid-md-6 no-padding relative\"><tc-date-picker placeholder=\"Choose a date\" ng-model=\"patient.dob\" ng-change=\"getAgeFromDob(patient.dob)\"></tc-date-picker></div><span class=\"grid-md-1 no-padding text-center\">--</span><div class=\"grid-md-5 no-padding\"><input class=\"grid-md-12 form-field\" name=\"age\" ng-change=\"getDateFromAge(patient.age)\" placeholder=\"Age\" ng-model=\"patient.age\"></div></div></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"gender-rltn\">Gender -- Relation</label><div class=\"grid-md-8 no-padding\"><div class=\"row no-padding\"><div class=\"grid-md-4 no-padding show-inline\"><select class=\"grid-md-12 form-field\" ng-model=\"patient.gender\" ng-options=\"genderType for genderType in genderTypes\"></select></div><label class=\"grid-md-1 text-center show-inline no-padding\" for=\"relationType\">--</label><div class=\"grid-md-3 no-padding show-inline\"><select class=\"grid-md-12 form-field\" ng-model=\"patient.relationType\" ng-options=\"relationType for relationType in relationTypes\"></select></div><div class=\"grid-md-4 no-padding pull-right\"><input id=\"relationName\" class=\"form-field grid-md-12\" name=\"age\" placeholder=\"Relation Name\" ng-model=\"patient.relationName\"></div></div></div></div><div class=\"row\"><label class=\"grid-md-4\"></label><button class=\"btn btn-light-green\" name=\"patientFormBtn\" ng-disabled=\"form.patientForm.$invalid || adhaarMsg\" ng-click=\"addPatient();\">{{patient.id? 'Update': 'Save'}}</button></div></div><div class=\"grid-md-1\"></div></div></form></div><div class=\"grid-md-4\"><div ng-if=\"!patient.id\"><img class=\"grid-md-12\" ng-src=\"{{patient.photoString}}\" alt=\"Click capture to see preview\"></div><div ng-if=\"patient.id && !patient.photoString\"><img src=\"./patient/getphoto?patientId={{ patient.id }}\" class=\"img-patient\" style=\"border:2px solid gray\"></div><div ng-if=\"patient.id && patient.photoString\"><img ng-src=\"{{patient.photoString}}\" class=\"img-patient\" style=\"border:2px solid gray\"></div></div></div>"
+    "    }</style><h2 align=\"center\">Patient Form</h2><div class=\"row\"><div class=\"grid-md-8 card\"><div class=\"patientForm-headline borderd\"><h3>Add New Patient</h3><div class=\"pull-right mar-top-44px\"><button tc-camera class=\"btn btn-sky-blue\" ng-model=\"patient.photoString\" confirm-text=\"Confirm\">Photo</button></div></div><form name=\"form.patientForm\" class=\"patientForm margin-10\" novalidate><div class=\"row\"><div class=\"grid-md-1\"></div><div class=\"grid-md-9 no-padding\"><div class=\"row\"><label class=\"grid-md-4\" for=\"patientName\">Patient Name*</label><div class=\"grid-md-8 no-padding\"><input id=\"patientName\" class=\"form-field grid-md-12\" name=\"patientName\" placeholder=\"Patient Name\" ng-model=\"patient.name\" required> <span class=\"error-msg\" ng-messages=\"patientForm.patientName.$error\"><span ng-message=\"required\">*Name is Required.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"aadhar\">Aadhar No*</label><div class=\"grid-md-8 no-padding\"><input id=\"aadhar\" class=\"form-field grid-md-12\" name=\"aadhar\" placeholder=\"Aadhar No\" ng-blur=\"isAdhaarExists(patient.adharNo)\" ng-model=\"patient.aadharNo\" ng-maxlength=\"12\" maxlength=\"12\" ng-disabled=\"isAdhaarDisabled\"> <span class=\"error-msg\">{{adhaarMsg}}</span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"mobileNo\">Mobile No*</label><div class=\"grid-md-8 no-padding\"><input id=\"mobileNo\" class=\"form-field grid-md-12\" name=\"mobileNo\" placeholder=\"Mobile No\" ng-model=\"patient.mobileNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\" required> <span class=\"error-msg\" ng-messages=\"patientForm.mobileNo.$error\"><span ng-message=\"required\">*Mobile No is Required.</span> <span ng-message=\"pattern\">*Enter 10digits Mobile Number.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"altMobileNo\">Alt No</label><div class=\"grid-md-8 no-padding\"><input id=\"altMobileNo\" class=\"form-field grid-md-12\" name=\"altMobileNo\" placeholder=\"Alt Mobile No\" ng-model=\"patient.alternateNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\"></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"altMobileNo\">Emergency No</label><div class=\"grid-md-8 no-padding\"><input id=\"emergencyNo\" class=\"form-field grid-md-12\" name=\"emergencyNo\" placeholder=\"Emergency No\" ng-model=\"patient.emergencyNo\" ng-pattern=\"/^[0-9]*$/\" ng-maxlength=\"10\" maxlength=\"10\"></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"village\">Village*</label><div class=\"grid-md-8 no-padding\"><input id=\"village\" class=\"form-field grid-md-12\" name=\"village\" placeholder=\"Village\" ng-model=\"patient.village\" required> <span class=\"error-msg\" ng-messages=\"patientForm.village.$error\"><span ng-message=\"required\">*Village is Required.</span></span></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"dob\">DOB -- Age*</label><div class=\"grid-md-8 no-padding\"><div class=\"row no-padding\"><div class=\"grid-md-6 no-padding relative\"><tc-date-picker placeholder=\"Choose a date\" ng-model=\"patient.dob\" ng-change=\"getAgeFromDob(patient.dob)\"></tc-date-picker></div><span class=\"grid-md-1 no-padding text-center\">--</span><div class=\"grid-md-5 no-padding\"><input class=\"grid-md-12 form-field\" name=\"age\" ng-change=\"getDateFromAge(patient.age)\" placeholder=\"Age\" ng-model=\"patient.age\"></div></div></div></div><div class=\"row\"><label class=\"grid-md-4\" for=\"gender-rltn\">Gender -- Relation</label><div class=\"grid-md-8 no-padding\"><div class=\"row no-padding\"><div class=\"grid-md-4 no-padding show-inline\"><select class=\"grid-md-12 form-field\" ng-model=\"patient.gender\" ng-options=\"genderType for genderType in genderTypes\"></select></div><label class=\"grid-md-1 text-center show-inline no-padding\" for=\"relationType\">--</label><div class=\"grid-md-3 no-padding show-inline\"><select class=\"grid-md-12 form-field\" ng-model=\"patient.relationType\" ng-options=\"relationType for relationType in relationTypes\"></select></div><div class=\"grid-md-4 no-padding pull-right\"><input id=\"relationName\" class=\"form-field grid-md-12\" name=\"age\" placeholder=\"Relation Name\" ng-model=\"patient.relationName\"></div></div></div></div><div class=\"row\"><label class=\"grid-md-4\"></label><button class=\"btn btn-light-green\" name=\"patientFormBtn\" ng-disabled=\"form.patientForm.$invalid || adhaarMsg\" ng-click=\"addPatient();\">{{patient.id? 'Update': 'Save'}}</button></div></div><div class=\"grid-md-1\"></div></div></form></div><div class=\"grid-md-4\"><div ng-if=\"!patient.id\"><img class=\"grid-md-12\" ng-src=\"{{patient.photoString}}\" alt=\"Click capture to see preview\"></div><div ng-if=\"patient.id && !patient.photoString\"><img ng-src=\"./patient/getphoto?patientId={{ patient.id }}\" class=\"img-patient\" style=\"border:2px solid gray\"></div><div ng-if=\"patient.id && patient.photoString\"><img ng-src=\"{{patient.photoString}}\" class=\"img-patient\" style=\"border:2px solid gray\"></div></div></div>"
   );
 
 

@@ -1,4 +1,4 @@
-angular.module('tcLib').service('purchasebillMedicineService', ['httpService', function(httpService) {
+angular.module('hcLib').service('purchasebillMedicineService', ['httpService', function(httpService) {
     this.purchaseBillMedicines = purchaseBillMedicines;
     this.alertInfo = alertInfo;
     this.pendingBillMedicines  = pendingBillMedicines;

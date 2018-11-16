@@ -1,15 +1,7 @@
 angular.module("hcLib").directive("patientForm", function() {
-	controller.$inject = ['$scope', 'patientService', '$stateParams', '$state', 'ngDialog'];
-	return {
-		restrict : 'E',
-		scope : {
-			patient: '=?',
-			onSubmit : '&'
-		},
-		controller : controller,
-		templateUrl : "src/patient-form/patient-form.tpl.html"
-	};
-	function controller($scope, patientService, $stateParams, $state, ngDialog) {
+	
+	controller.$inject = ['$scope', 'patientService', 'ngDialog'];
+	function controller($scope, patientService,  ngDialog) {
 		$scope.addPatient = addPatient;
 		$scope.getAgeFromDob = getAgeFromDob;
 		$scope.getDateFromAge = getDateFromAge;
@@ -26,7 +18,6 @@ angular.module("hcLib").directive("patientForm", function() {
 				$scope.gender = $scope.genderTypes[0];
 				$scope.relationType = $scope.relationTypes[1];
 			}
-			$scope.opId = $stateParams.opId;
 		}
 
 		function addPatient() {
@@ -46,4 +37,13 @@ angular.module("hcLib").directive("patientForm", function() {
 		};
 		init();
 	}
+	return {
+		restrict : 'E',
+		scope : {
+			patient: '=?',
+			onSubmit : '&'
+		},
+		controller : controller,
+		templateUrl : "src/patient-form/patient-form.tpl.html"
+	};
 });

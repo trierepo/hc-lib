@@ -1,4 +1,4 @@
-angular.module('tcLib').service('reportsService', ['httpService', function(httpService) {
+angular.module('hcLib').service('reportsService', ['httpService', function(httpService) {
     this.salesReports = salesReports;
     this.salesReturnReports = salesReturnReports;
     this.salesPaymentReports = salesPaymentReports;

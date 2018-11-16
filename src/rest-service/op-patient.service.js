@@ -1,4 +1,4 @@
-angular.module('tcLib').service('opPatientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('opPatientService', ['httpService', function(httpService) {
     this.save = save;
     this.getOpPatientsListByOptions = getOpPatientsListByOptions;
     this.getOpPatientByPatientId = getOpPatientByPatientId;
