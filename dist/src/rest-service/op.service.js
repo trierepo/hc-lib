@@ -1,4 +1,4 @@
-angular.module('tcLib').service('opService', ['httpService', function(httpService) {
+angular.module('hcLib').service('opService', ['httpService', function(httpService) {
     this.create = create;
     this.search = search;
     this.get = get;

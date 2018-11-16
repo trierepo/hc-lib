@@ -1,4 +1,4 @@
-angular.module('tcLib').service('representativeService', ['httpService', function(httpService) {
+angular.module('hcLib').service('representativeService', ['httpService', function(httpService) {
     this.save = save;
     this.representativesList = representativesList;
 

@@ -1,4 +1,4 @@
-angular.module('tcLib').service('casesheet', ['httpService', function(httpService) {
+angular.module('hcLib').service('casesheet', ['httpService', function(httpService) {
     this.save = save;
     this.caseSheetList = caseSheetList;
 

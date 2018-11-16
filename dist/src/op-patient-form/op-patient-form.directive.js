@@ -4,7 +4,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
 		restrict : 'E',
 		scope : {
             op: '=',
-            opId: '@'
+            opId: '='
 		},
 		controller : controller,
 		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"

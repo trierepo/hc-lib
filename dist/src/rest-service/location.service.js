@@ -1,4 +1,4 @@
-angular.module('tcLib').service('locationService', ['httpService', function(httpService) {
+angular.module('hcLib').service('locationService', ['httpService', function(httpService) {
     this.save = save;
     this.locationsList = locationsList;
 

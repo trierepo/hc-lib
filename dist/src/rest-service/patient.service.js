@@ -1,4 +1,4 @@
-angular.module('tcLib').service('patientService', ['httpService', function(httpService) {
+angular.module('hcLib').service('patientService', ['httpService', function(httpService) {
     this.save = save;
     this.patientsListByOptions = patientsListByOptions;
     this.imageData = imageData;

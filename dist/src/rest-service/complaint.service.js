@@ -1,4 +1,4 @@
-angular.module('tcLib').service('complaintService', ['httpService', function(httpService) {
+angular.module('hcLib').service('complaintService', ['httpService', function(httpService) {
     this.saveComplaint = saveComplaint;
     this.saveComplaintTransation = saveComplaintTransation;
     this.complaintMastersList = complaintMastersList;
