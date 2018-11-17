@@ -3,7 +3,7 @@ angular.module('hcLib').directive("casesheet",function(){
         templateUrl:'src/casesheet/casesheet.tpl.html',
         scope:{
             opPatientData:'@',
-            currentCasesheet:'&',
+            currentCaseSheet:'&',
             onSave:'&',
         },
         controller:function($scope,$http,casesheet) {

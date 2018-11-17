@@ -21,7 +21,7 @@ angular.module("hcLib").directive("patientForm", function() {
 		}
 
 		function addPatient() {
-			patientService.addPatient($scope.patient).then(function(res) {
+			patientService.save($scope.patient).then(function(res) {
 				$scope.onSubmit({
 					$patient : res
 				});

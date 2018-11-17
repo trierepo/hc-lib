@@ -1,7 +1,7 @@
 angular.module("hcLib").directive("opPatientForm", function() {
 	
-    controller.$inject = ['$scope','opPatientService', 'opService', '$state','$parse', 'commonService'];
-    function controller($scope,opPatientService, opService, $state,$parse, commonService){
+    controller.$inject = ['$scope','$timeout','opPatientService', 'opService', '$state','$parse', 'commonService'];
+    function controller($scope,$timeout,opPatientService, opService, $state,$parse, commonService){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
@@ -18,7 +18,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
                 getOpType();
                 getOpSubTypeList();
             });
-            $scope.opConfig = opService.configList();
+            $scope.opConfig = angular.copy(OP_COST_CONFIG);
         }
         init();
         

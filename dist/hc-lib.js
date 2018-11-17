@@ -180,7 +180,7 @@ angular.module('hcLib').directive("casesheet",function(){
         templateUrl:'src/casesheet/casesheet.tpl.html',
         scope:{
             opPatientData:'@',
-            currentCasesheet:'&',
+            currentCaseSheet:'&',
             onSave:'&',
         },
         controller:['$scope', '$http', 'casesheet', function($scope,$http,casesheet) {
@@ -550,8 +550,8 @@ angular.module("hcLib").directive("medicineForm",function(){
 });
 angular.module("hcLib").directive("opPatientForm", function() {
 	
-    controller.$inject = ['$scope','opPatientService', 'opService', '$state','$parse', 'commonService'];
-    function controller($scope,opPatientService, opService, $state,$parse, commonService){
+    controller.$inject = ['$scope','$timeout','opPatientService', 'opService', '$state','$parse', 'commonService'];
+    function controller($scope,$timeout,opPatientService, opService, $state,$parse, commonService){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
@@ -568,7 +568,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
                 getOpType();
                 getOpSubTypeList();
             });
-            $scope.opConfig = opService.configList();
+            $scope.opConfig = angular.copy(OP_COST_CONFIG);
         }
         init();
         
@@ -740,7 +740,7 @@ angular.module("hcLib").directive("patientForm", function() {
 		}
 
 		function addPatient() {
-			patientService.addPatient($scope.patient).then(function(res) {
+			patientService.save($scope.patient).then(function(res) {
 				$scope.onSubmit({
 					$patient : res
 				});
