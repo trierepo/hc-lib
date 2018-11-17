@@ -13,6 +13,7 @@ module.exports = function (grunt) {
 
         clean: {
             dist: ['./dist'],
+            distSrc: ['./dist/src'],
         },
         
         uglify: {
@@ -73,6 +74,6 @@ module.exports = function (grunt) {
 
 
     //register grunt default task
-    grunt.registerTask('default', ['clean:dist', 'ngAnnotate', 'ngtemplates', 'concat', 'uglify']);
-    grunt.registerTask('build', ['clean:dist', 'ngAnnotate', 'ngtemplates', 'concat', 'uglify']);
+    grunt.registerTask('default', ['clean:dist', 'ngAnnotate', 'ngtemplates', 'concat', 'uglify', 'clean:distSrc']);
+    grunt.registerTask('build', ['clean:dist', 'ngAnnotate', 'ngtemplates', 'concat', 'uglify','clean:distSrc']);
 };
