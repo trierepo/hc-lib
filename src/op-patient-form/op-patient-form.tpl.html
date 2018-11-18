@@ -9,9 +9,13 @@
 							<div class="row padding-2px">
 								<label class="grid-md-4" for="patientName">Patient Name*</label>
 								<div class="grid-md-8 no-padding">
-									<patient-auto-suggest options="{placeHolder:'Patient Name'}" output-model="patient" on-select="checkPatientStatus(selected)"> </patient-auto-suggest>
+									<patient-auto-suggest options="{placeHolder:'Patient Name', fieldName:'patientName'}" output-model="patient" on-select="checkPatientStatus(selected)"> </patient-auto-suggest>
 								</div>
 								<div ng-if="opPatientIsExist" class="color-red">{{opPatientIsExist}}</div>
+								<span class="error-msg" ng-messages="opPatientForm.patientName.$error" ng-messages-multiple>
+										<span ng-message="required">*Patient Name is Required.</span>
+										<span ng-message="pattern">*Enter a valid name.</span>
+								</span>
 							</div>
 							<!-- if op patient exist display : none -->
 							<div ng-if="!opPatientIsExist">

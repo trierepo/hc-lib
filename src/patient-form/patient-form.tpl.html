@@ -23,21 +23,28 @@
                             <label class="grid-md-4" for="patientName">Patient Name*</label>
                             <div class="grid-md-8 no-padding">
                                 <input id="patientName" type="text" class="form-field grid-md-12"
-                                    name="patientName" placeholder="Patient Name"
-                                    ng-model="patient.name" required> <span
-                                    class="error-msg" ng-messages="patientForm.patientName.$error">
+                                    name="patientName" placeholder="Patient Name"  ng-pattern = "/^[a-zA-Z]*$/"
+                                    ng-model="patient.name" required> 
+                                <span ng-messages="form.patientForm.patientName.$error" class="alert-msg" ng-messages-multiple>
                                     <span ng-message="required">*Name is Required.</span>
+                                    <span ng-message="pattern">*Enter charachters only.</span>
                                 </span>
+                                <!-- <span class="alert-msg" ng-show="form.patientForm.patientName.$error.required">*Name is Required.</span>
+                                <span class="alert-msg" ng-show="form.patientForm.patientName.$error.pattern">*Enter charachters only.</span> -->
                             </div>
                         </div>
                         <div class="row">
                             <label class="grid-md-4" for="aadhar">Aadhar No*</label>
                             <div class="grid-md-8 no-padding">
                                 <input id="aadhar" type="text" class="form-field grid-md-12"
-                                    name="aadhar" placeholder="Aadhar No"
+                                    name="aadhar" placeholder="Aadhar No" ng-pattern="/^[0-9]*$/"
                                     ng-blur="isAdhaarExists(patient.adharNo)"
-                                    ng-model="patient.aadharNo" ng-maxlength="12" maxlength="12" ng-disabled="isAdhaarDisabled">
+                                    ng-model="patient.aadharNo" ng-maxlength="12" maxlength="12" ng-disabled="isAdhaarDisabled" required>
                                 <span class="error-msg">{{adhaarMsg}}</span>
+                                <span class="alert-msg" ng-messages="form.patientForm.aadhar.$error" ng-messages-multiple>
+                                    <span ng-message="required">*Aadhar No is Required.</span> 
+                                    <span ng-message="pattern">*Enter valid Number.</span>
+                                </span>
                             </div>
                         </div>
                         <div class="row">
@@ -46,10 +53,11 @@
                                 <input id="mobileNo" type="text" class="form-field grid-md-12"
                                     name="mobileNo" placeholder="Mobile No"
                                     ng-model="patient.mobileNo" ng-pattern="/^[0-9]*$/"
-                                    ng-maxlength="10" maxlength="10" required> <span
-                                    class="error-msg" ng-messages="patientForm.mobileNo.$error">
+                                    ng-maxlength="10" maxlength="10" required>
+                                     <span
+                                    class="alert-msg" ng-messages="form.patientForm.mobileNo.$error" ng-messages-multiple>
                                     <span ng-message="required">*Mobile No is Required.</span> <span
-                                    ng-message="pattern">*Enter 10digits Mobile Number.</span>
+                                    ng-message="pattern">*Enter 10 digits Mobile Number.</span>
                                 </span>
                             </div>
                         </div>
@@ -75,11 +83,12 @@
                         <div class="row">
                             <label class="grid-md-4" for="village">Village*</label>
                             <div class="grid-md-8 no-padding">
-                                <input id="village" type="text" class="form-field grid-md-12"
+                                <input id="village" type="text" class="form-field grid-md-12" ng-pattern="/^[a-zA-Z]*$/"
                                     name="village" placeholder="Village" ng-model="patient.village"
-                                    required> <span class="error-msg"
-                                    ng-messages="patientForm.village.$error"> <span
-                                    ng-message="required">*Village is Required.</span>
+                                    required> 
+                                <span class="alert-msg" ng-messages="form.patientForm.village.$error" ng-messages-multiple>
+                                    <span ng-message="required">*Village is Required.</span>
+                                    <span ng-message="pattern">*Enter a valid name.</span>
                                 </span>
                             </div>
                         </div>
@@ -94,7 +103,11 @@
                                     <div class="grid-md-5 no-padding">
                                         <input type="text" class="grid-md-12 form-field" name="age"
                                             ng-change="getDateFromAge(patient.age)" placeholder="Age"
-                                            ng-model="patient.age">
+                                            ng-model="patient.age" required>
+                                            <span class="alert-msg" ng-messages="form.patientForm.age.$error" ng-messages-multiple>
+                                                <span ng-message="required">*Age is Required.</span>
+                                                <span ng-message="pattern">*Enter a valid Age.</span>
+                                            </span>
                                     </div>
                                 </div>
                             </div>

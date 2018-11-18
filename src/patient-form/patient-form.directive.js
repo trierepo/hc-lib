@@ -1,7 +1,7 @@
 angular.module("hcLib").directive("patientForm", function() {
 	
-	controller.$inject = ['$scope', 'patientService', 'ngDialog'];
-	function controller($scope, patientService,  ngDialog) {
+	controller.$inject = ['$scope', 'patientService', 'ngDialog','$parse'];
+	function controller($scope, patientService,  ngDialog, $parse) {
 		$scope.addPatient = addPatient;
 		$scope.getAgeFromDob = getAgeFromDob;
 		$scope.getDateFromAge = getDateFromAge;
@@ -11,6 +11,8 @@ angular.module("hcLib").directive("patientForm", function() {
 			$scope.form = {};
 			$scope.genderTypes = GENDERS;
 			$scope.relationTypes = RELATIONS;
+			$scope.form = {patientForm:{}};
+			$scope.form.patientForm.$pristine = true;
 
 			if ($scope.patient) {
 				$scope.patient = $scope.patient || {};
