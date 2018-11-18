@@ -84,7 +84,7 @@ angular.module("hcLib").directive("autoSuggest", function() {
 							filter = JSON.parse(searchKey);
 						}
 					}
-					$scope.suggestList = $filter("filter")($scope.suggestions, filter);
+					$scope.suggestList = $filter("filter")($scope.suggestions, filter).slice(0,50);
 				}
 			}
 
