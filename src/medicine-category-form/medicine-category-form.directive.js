@@ -10,7 +10,7 @@ angular.module("hcLib").directive("medicineCategoryForm",function(){
 					}
 					
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({medicineCategory: res.response});
+						$scope.onCreate({medicineCategory: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();

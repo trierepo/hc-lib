@@ -48,7 +48,7 @@ angular.module("hcLib").directive('prescriptionGenerator', function($rootScope) 
 			$scope.fetchMoreMedicineProduct = function () {
 				$scope.medicineSearch.startIndex = $scope.purchaseMedicineSearchResults.length;
 				opPrescriptionService.searchPurchaseMedicines($scope.medicineSearch).then(function(res) {
-					$scope.purchaseMedicineSearchResults = $scope.purchaseMedicineSearchResults.concat(res.response);
+					$scope.purchaseMedicineSearchResults = $scope.purchaseMedicineSearchResults.concat(res);
 				});
 			};
 			$scope.getAvailableQuantity = function(product) {
@@ -57,8 +57,8 @@ angular.module("hcLib").directive('prescriptionGenerator', function($rootScope) 
 			$scope.getRecentPrescriptionsByComplaint = function(){
 				opPrescriptionService.opPrescriptionList({compliant:$scope.prescription.complaint}).then(function(res){
 					for(var i=0;i<res.length;i++){
-						if($scope.getAvailableQuantity(res.response[i])!=0){
-							$scope.prescription.prescriptionMedicines.push(res.response[i]);
+						if($scope.getAvailableQuantity(res[i])!=0){
+							$scope.prescription.prescriptionMedicines.push(res[i]);
 						}
 					}
 					$scope.getPrescriptionTotal();

@@ -82,7 +82,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         
         function saveOrUpdateOPPatient() {
             opPatientService.save($scope.opPatient).then(function(response){
-                $state.go('opPatientList',{opId: $scope.op.id});
+                $state.go('opPatientSearch',{opId: $scope.op.id});
             });		
         }
         function onSelectPatient(patient){

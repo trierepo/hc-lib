@@ -1,7 +1,7 @@
 angular.module("hcLib").directive("medicineForm",function(){
 	return{
 		templateUrl:"src/medicine-form/medicine-form.tpl.html",
-		controller:function($scope,medicineService,companyService,drugFormulae,medicineCategoryService,medicineCategoryByDoctorService,locationService,$timeout,$log){
+		controller:function($scope,medicineService,companyService,drugFormulaService,medicineCategoryService,medicineCategoryByDoctorService,locationService,$timeout,$log){
 			$scope.init=function(){
 				$scope.getCompaniesList();
 				$scope.getDrugFormulaList();
@@ -11,36 +11,36 @@ angular.module("hcLib").directive("medicineForm",function(){
 			};
 			$scope.getCompaniesList=function(){
 				companyService.companiesList().then(function(res){
-					if(res.isSuccess) {
-						$scope.companies=res.response;
+					if(res) {
+						$scope.companies=res;
 					}
 				});
 			};
 			$scope.getDrugFormulaList=function(){
-				drugFormulae.drugFormulaeList().then(function(res){
-					if(res.isSuccess) {
-						$scope.drugFormulae=res.response;
+				drugFormulaService.drugFormulaeList().then(function(res){
+					if(res) {
+						$scope.drugFormulae=res;
 					}
 				});
 			};
 			$scope.getMedicineCategoryList=function(){
 				medicineCategoryService.medicineCategoryList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineCategories=res.response;
+					if(res) {
+						$scope.medicineCategories=res;
 					}
 				});
 			};
 			$scope.getMedicineCategoryByDoctorList=function(){
 				medicineCategoryByDoctorService.medicineCategoryByDoctorList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineCategoryByDoctor=res.response;
+					if(res) {
+						$scope.medicineCategoryByDoctor=res;
 					}
 				});
 			};
 			$scope.getMedicineLocationList=function(){
 				locationService.locationsList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineLocations=res.response;
+					if(res) {
+						$scope.medicineLocations=res;
 					}
 				});
 			};
@@ -52,7 +52,7 @@ angular.module("hcLib").directive("medicineForm",function(){
 						$scope.medicineForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({medicine: res.response});
+						$scope.onCreate({medicine: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();

@@ -1,4 +1,4 @@
-angular.module('hcLib').service('drugFormulae', ['httpService', function(httpService) {
+angular.module('hcLib').service('drugFormulaService', ['httpService', function(httpService) {
     this.save = save;
     this.drugFormulaeList = drugFormulaeList;
 

@@ -9,7 +9,7 @@ angular.module("hcLib").directive("locationForm",function(){
 						$scope.locationForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({location: res.response});
+						$scope.onCreate({location: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();

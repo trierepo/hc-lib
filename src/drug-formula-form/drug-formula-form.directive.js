@@ -1,15 +1,15 @@
 angular.module("hcLib").directive("drugFormulaForm",function(){
 	return{
 		templateUrl:"src/drug-formula-form/drug-formula-form.tpl.html",
-		controller:function($scope,drugFormulae){
+		controller:function($scope,drugFormulaService){
 			$scope.saveDrugFormulae=function(drugFormulae){
-				drugFormulae.save(drugFormulae).then(function(res) {
+				drugFormulaService.save(drugFormulae).then(function(res) {
 					$scope.drugFormulae = {};
 					if($scope.drugFormulaForm) {
 						$scope.drugFormulaForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({drugFormulae: res.response});
+						$scope.onCreate({drugFormulae: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();

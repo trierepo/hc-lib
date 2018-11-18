@@ -240,13 +240,13 @@ angular.module("hcLib").directive("companyForm", function() {
 		templateUrl : "src/company-form/company-form.tpl.html",
 		controller : ['$scope', 'companyService', function($scope, companyService) {
 			$scope.saveCompany = function(company) {
-				companyService.saveCompany(company).then(function(res) {
+				companyService.save(company).then(function(res) {
 					$scope.company = {};
 					if($scope.companyForm) {
 						$scope.companyForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({value: res.response});
+						$scope.onCreate({value: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -315,15 +315,15 @@ angular.module('hcLib').directive("complaint",function(){
 angular.module("hcLib").directive("drugFormulaForm",function(){
 	return{
 		templateUrl:"src/drug-formula-form/drug-formula-form.tpl.html",
-		controller:['$scope', 'drugFormulae', function($scope,drugFormulae){
+		controller:['$scope', 'drugFormulaService', function($scope,drugFormulaService){
 			$scope.saveDrugFormulae=function(drugFormulae){
-				drugFormulae.save(drugFormulae).then(function(res) {
+				drugFormulaService.save(drugFormulae).then(function(res) {
 					$scope.drugFormulae = {};
 					if($scope.drugFormulaForm) {
 						$scope.drugFormulaForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({drugFormulae: res.response});
+						$scope.onCreate({drugFormulae: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -351,7 +351,7 @@ angular.module("hcLib").directive("locationForm",function(){
 						$scope.locationForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({location: res.response});
+						$scope.onCreate({location: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -380,7 +380,7 @@ angular.module("hcLib").directive("medicineCategoryForm",function(){
 					}
 					
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({medicineCategory: res.response});
+						$scope.onCreate({medicineCategory: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -408,7 +408,7 @@ angular.module("hcLib").directive("medicineDoctorCategoryForm", function() {
 						$scope.medicineCategoryDoctorForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({categoryByDoctor: res.response});
+						$scope.onCreate({categoryByDoctor: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -427,7 +427,7 @@ angular.module("hcLib").directive("medicineDoctorCategoryForm", function() {
 angular.module("hcLib").directive("medicineForm",function(){
 	return{
 		templateUrl:"src/medicine-form/medicine-form.tpl.html",
-		controller:['$scope', 'medicineService', 'companyService', 'drugFormulae', 'medicineCategoryService', 'medicineCategoryByDoctorService', 'locationService', '$timeout', '$log', function($scope,medicineService,companyService,drugFormulae,medicineCategoryService,medicineCategoryByDoctorService,locationService,$timeout,$log){
+		controller:['$scope', 'medicineService', 'companyService', 'drugFormulaService', 'medicineCategoryService', 'medicineCategoryByDoctorService', 'locationService', '$timeout', '$log', function($scope,medicineService,companyService,drugFormulaService,medicineCategoryService,medicineCategoryByDoctorService,locationService,$timeout,$log){
 			$scope.init=function(){
 				$scope.getCompaniesList();
 				$scope.getDrugFormulaList();
@@ -437,36 +437,36 @@ angular.module("hcLib").directive("medicineForm",function(){
 			};
 			$scope.getCompaniesList=function(){
 				companyService.companiesList().then(function(res){
-					if(res.isSuccess) {
-						$scope.companies=res.response;
+					if(res) {
+						$scope.companies=res;
 					}
 				});
 			};
 			$scope.getDrugFormulaList=function(){
-				drugFormulae.drugFormulaeList().then(function(res){
-					if(res.isSuccess) {
-						$scope.drugFormulae=res.response;
+				drugFormulaService.drugFormulaeList().then(function(res){
+					if(res) {
+						$scope.drugFormulae=res;
 					}
 				});
 			};
 			$scope.getMedicineCategoryList=function(){
 				medicineCategoryService.medicineCategoryList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineCategories=res.response;
+					if(res) {
+						$scope.medicineCategories=res;
 					}
 				});
 			};
 			$scope.getMedicineCategoryByDoctorList=function(){
 				medicineCategoryByDoctorService.medicineCategoryByDoctorList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineCategoryByDoctor=res.response;
+					if(res) {
+						$scope.medicineCategoryByDoctor=res;
 					}
 				});
 			};
 			$scope.getMedicineLocationList=function(){
 				locationService.locationsList().then(function(res){
-					if(res.isSuccess) {
-						$scope.medicineLocations=res.response;
+					if(res) {
+						$scope.medicineLocations=res;
 					}
 				});
 			};
@@ -478,7 +478,7 @@ angular.module("hcLib").directive("medicineForm",function(){
 						$scope.medicineForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({medicine: res.response});
+						$scope.onCreate({medicine: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
@@ -632,7 +632,7 @@ angular.module("hcLib").directive("opPatientForm", function() {
         
         function saveOrUpdateOPPatient() {
             opPatientService.save($scope.opPatient).then(function(response){
-                $state.go('opPatientList',{opId: $scope.op.id});
+                $state.go('opPatientSearch',{opId: $scope.op.id});
             });		
         }
         function onSelectPatient(patient){
@@ -885,7 +885,7 @@ angular.module("hcLib").directive('prescriptionGenerator', ['$rootScope', functi
 			$scope.fetchMoreMedicineProduct = function () {
 				$scope.medicineSearch.startIndex = $scope.purchaseMedicineSearchResults.length;
 				opPrescriptionService.searchPurchaseMedicines($scope.medicineSearch).then(function(res) {
-					$scope.purchaseMedicineSearchResults = $scope.purchaseMedicineSearchResults.concat(res.response);
+					$scope.purchaseMedicineSearchResults = $scope.purchaseMedicineSearchResults.concat(res);
 				});
 			};
 			$scope.getAvailableQuantity = function(product) {
@@ -894,8 +894,8 @@ angular.module("hcLib").directive('prescriptionGenerator', ['$rootScope', functi
 			$scope.getRecentPrescriptionsByComplaint = function(){
 				opPrescriptionService.opPrescriptionList({compliant:$scope.prescription.complaint}).then(function(res){
 					for(var i=0;i<res.length;i++){
-						if($scope.getAvailableQuantity(res.response[i])!=0){
-							$scope.prescription.prescriptionMedicines.push(res.response[i]);
+						if($scope.getAvailableQuantity(res[i])!=0){
+							$scope.prescription.prescriptionMedicines.push(res[i]);
 						}
 					}
 					$scope.getPrescriptionTotal();
@@ -1087,7 +1087,7 @@ angular.module('hcLib').service('complaintService', ['httpService', function(htt
     }
 }]);
 
-angular.module('hcLib').service('drugFormulae', ['httpService', function(httpService) {
+angular.module('hcLib').service('drugFormulaService', ['httpService', function(httpService) {
     this.save = save;
     this.drugFormulaeList = drugFormulaeList;
 

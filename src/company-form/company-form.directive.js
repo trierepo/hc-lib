@@ -4,13 +4,13 @@ angular.module("hcLib").directive("companyForm", function() {
 		templateUrl : "src/company-form/company-form.tpl.html",
 		controller : function($scope, companyService) {
 			$scope.saveCompany = function(company) {
-				companyService.saveCompany(company).then(function(res) {
+				companyService.save(company).then(function(res) {
 					$scope.company = {};
 					if($scope.companyForm) {
 						$scope.companyForm.$setPristine();
 					}
 					if (typeof $scope.onCreate === 'function') {
-						$scope.onCreate({value: res.response});
+						$scope.onCreate({value: res});
 					}
 					if(typeof $scope.onSubmitCloseForm=='function'){
 						$scope.onSubmitCloseForm();
