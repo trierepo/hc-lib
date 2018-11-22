@@ -9,6 +9,7 @@ angular.module('hcLib').service('reportsService', ['httpService', function(httpS
     this.paymentTransactionsByDateRange = paymentTransactionsByDateRange;
     this.adjustMrpByDateRange = adjustMrpByDateRange;
     this.adjustUnitsOrAvailability = adjustUnitsOrAvailability;
+    this.salesPayments = salesPayments;
 
     function salesReports(payload) {
         return httpService.get('reports/sales/bills', payload);
@@ -52,7 +53,7 @@ angular.module('hcLib').service('reportsService', ['httpService', function(httpS
         return httpService.post('reports/adjustunitsoravailability', salesBillMedicines);
     }   
 
-    function salesTransactions(payload) {
+    function salesPayments(payload) {
         return httpService.get('reports/salesPayments', payload);
     }
 
