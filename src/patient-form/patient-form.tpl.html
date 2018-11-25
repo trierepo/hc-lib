@@ -23,7 +23,7 @@
                             <label class="grid-md-4" for="patientName">Patient Name*</label>
                             <div class="grid-md-8 no-padding">
                                 <input id="patientName" type="text" class="form-field grid-md-12"
-                                    name="patientName" placeholder="Patient Name"  ng-pattern = "/^[a-zA-Z]*$/"
+                                    name="patientName" placeholder="Patient Name"  ng-pattern = "/^[a-zA-Z\s]*$/"
                                     ng-model="patient.name" required> 
                                 <span ng-messages="form.patientForm.patientName.$error" class="alert-msg" ng-messages-multiple>
                                     <span ng-message="required">*Name is Required.</span>
