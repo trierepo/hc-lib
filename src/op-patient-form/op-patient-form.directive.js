@@ -1,7 +1,7 @@
 angular.module("hcLib").directive("opPatientForm", function() {
 	
-    controller.$inject = ['$scope','$timeout','opPatientService', 'opService', '$state','$parse', 'commonService'];
-    function controller($scope,$timeout,opPatientService, opService, $state,$parse, commonService){
+    controller.$inject = ['$scope','$timeout','opPatientService', 'opService', '$parse', 'commonService'];
+    function controller($scope,$timeout,opPatientService, opService, $parse, commonService){
 	
         $scope.onSelectPatient = onSelectPatient;
         $scope.onPatientAdd = onPatientAdd;
@@ -82,7 +82,10 @@ angular.module("hcLib").directive("opPatientForm", function() {
         
         function saveOrUpdateOPPatient() {
             opPatientService.save($scope.opPatient).then(function(response){
-                $state.go('opPatientSearch',{opId: $scope.op.id});
+                if(response && typeof $scope.onSave == 'function'){
+                    $scope.onSave({opId: $scope.op.id});
+                }
+                
             });		
         }
         function onSelectPatient(patient){
@@ -160,7 +163,8 @@ angular.module("hcLib").directive("opPatientForm", function() {
 		restrict : 'E',
 		scope : {
             op: '=',
-            opId: '='
+            opId: '=',
+            onSave: '&'
 		},
 		controller : controller,
 		templateUrl : "src/op-patient-form/op-patient-form.tpl.html"
